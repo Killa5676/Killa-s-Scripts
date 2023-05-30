@@ -1,0 +1,76 @@
+getgenv().autoload = false
+
+
+
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+local selectedlayout
+local LoadTable = {"Layout1","Layout2","Layout3" }
+
+
+local function AutoLoad(layout)
+    spawn(function ()
+        while getgenv().autoload == false do
+
+local args = {
+    [1] = "LoadT",
+    [2] = layout,
+    [3] = {
+        [1] = {
+            ["CostPerUnit"] = 74000,
+            ["Name"] = "Spawn Beacon",
+            ["Amount"] = 1
+        },
+        [2] = {
+            ["CostPerUnit"] = 600,
+            ["Name"] = "Wood Flooring",
+            ["Amount"] = 4
+        },
+        [3] = {
+            ["CostPerUnit"] = 25,
+            ["Name"] = "Giant Torch",
+            ["Amount"] = 2
+        }
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Layouts"):InvokeServer(unpack(args))
+
+wait(1)
+
+if getgenv().autoload == false then
+    break
+end
+end
+
+end)
+end
+
+local Window = OrionLib:MakeWindow({Name = "[🎵] Miners Haven Mod// Killa#2836", HidePremium = false, SaveConfig = true, ConfigFolder = "Killa Hub"})
+
+local Tab = Window:MakeTab({
+	Name = "Main",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+Tab:AddDropdown({
+	Name = "Select Layout",
+	Default = "Layout1",
+	Options = LoadTable,
+	Callback = function(value)
+        selectedlayout = value
+		print(value)
+	end    
+})
+
+Tab:AddToggle({
+	Name = "Auto load Selected",
+	Default = false,
+	Callback = function(bool)
+		getgenv().autoload = bool
+    print("Auto farm is", bool)
+    if bool then
+        AutoLoad(selectedlayout)
+    end
+	end    
+})
