@@ -77,29 +77,34 @@ local questTable = {
 
 
 
+
+
     
-local speedSelected = 50
-local character = game:GetService("Players").LocalPlayer.Character
-local humanoid = character:WaitForChild("Humanoid")
+  local speedSelected = 50
+  local character = game:GetService("Players").LocalPlayer.Character
+  local humanoid = character:WaitForChild("Humanoid")
+  
+  -- Function to change the speed
+  local function SpeedChanger(speed)
+      speedSelected = speed -- Update the selected speed variable
+      humanoid.WalkSpeed = speed -- Modify the speed of the humanoid
+  end
+  
+  -- Function to handle character respawn
+  local function OnCharacterAdded(newCharacter)
+      character = newCharacter
+      humanoid = character:WaitForChild("Humanoid")
+      humanoid.WalkSpeed = speedSelected -- Apply the stored speed when the character respawns
+  end
+  
+  -- Function to handle character removal (death)
+  local function OnCharacterRemoving()
+      humanoid.WalkSpeed = 50 -- Reset the speed to the default value when the character is removed (dies)
+  end
 
--- Function to change the speed
-local function SpeedChanger(speed)
-    speedSelected = speed -- Update the selected speed variable
-    humanoid.WalkSpeed = speed -- Modify the speed of the humanoid
-end
 
--- Function to handle character respawn
-local function OnCharacterAdded(newCharacter)
-    character = newCharacter
-    humanoid = character:WaitForChild("Humanoid")
-    humanoid.WalkSpeed = speedSelected -- Apply the stored speed when the character respawns
-end
-
--- Function to handle character removal (death)
-local function OnCharacterRemoving()
-    humanoid.WalkSpeed = 50 -- Reset the speed to the default value when the character is removed (dies)
-end
-
+local guiselect
+local guitable = {"CraftBats", "CraftPets", "Upgrades"}
 
 
 local uiopen = workspace.UIOpenHitboxes:GetChildren()
@@ -159,11 +164,12 @@ function TweenToHead(npc)
 
     if humanoid and head then
         local headPosition = head.Position
-        local cf = CFrame.new(headPosition)
+        local cf = CFrame.new(headPosition) + Vector3.new(0, -5, 0) -- Move down by 5 units
         local tween = TweenService:Create(localPlayer.Character.HumanoidRootPart, TweenInfo, {CFrame = cf})
         tween:Play()
     end
 end
+
 
 function getcurrentPlayerPOS()
     local plyr = game.Players.LocalPlayer
@@ -200,23 +206,24 @@ local function AutoClick()
         end)
 
         end      
-
+      
+      
         local function autofarmworld(pnpc, fnpc, speed, Method)
             spawn(function()
                 while getgenv().autofarmworld do
                     local npcFolder = workspace.NPC[pnpc]:GetChildren()
-        
+          
                     for _, npc in ipairs(npcFolder) do
                         TweenToHead(npc)
                         wait(speed)
-        
+          
                         if not getgenv().autofarmworld then
                             break
                         end
-        
+          
                         local npcName = npc.Name
                         local npcExists = true
-        
+          
                         while getgenv().autofarmworld and npcExists do
                             local success, error = pcall(function()
                                 local args = {
@@ -225,15 +232,15 @@ local function AutoClick()
                                 }
                                 game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Punch"):FireServer(unpack(args))
                             end)
-        
+          
                             if not success then
                                 warn("Error occurred while executing punch:", error)
                             end
-        
+          
                             npcExists = workspace.NPC[pnpc]:FindFirstChild(npcName)
-                            wait()
+                            wait(0)
                         end
-        
+          
                         -- Teleport to the next NPC
                         if getgenv().autofarmworld then
                             local nextNPC = workspace.NPC[pnpc]:FindFirstChild(npcName)
@@ -242,11 +249,15 @@ local function AutoClick()
                             end
                         end
                     end
-        
+          
                     wait(speed) -- Randomized delay between iterations
                 end
             end)
-        end
+          end
+        
+        
+        
+        
         
         
         
@@ -389,6 +400,26 @@ local function TeleportUI(ui)
     end)
 end
 
+local function OpenGui(gui)
+    spawn(function ()
+        while wait() do
+            local players = game:GetService("Players")
+            local localPlayer = players.LocalPlayer
+            
+            -- Wait for the player's PlayerGui to load
+            repeat
+                wait(0)
+            until localPlayer.PlayerGui and game:GetService("Players").LocalPlayer.PlayerGui.mainGui:FindFirstChild("Menus")
+            
+            -- Get the Achievements frame of the Rank Simulator X GUI
+            local achievementsFrame = game:GetService("Players").LocalPlayer.PlayerGui.mainGui.Menus[gui]
+            
+            -- Set the Visible property of the Achievements frame to true to make it active
+            achievementsFrame.Visible = true
+        break 
+        end
+    end)
+end
 
 
 local Window = OrionLib:MakeWindow({Name = "Strong Fighters Simulator! // Killa#2836", HidePremium = false, SaveConfig = true, ConfigFolder = "Killa Hub"})
@@ -520,21 +551,6 @@ Tab:AddToggle({
 	end    
 })
 
-Tab:AddToggle({
-    Name = "AutoBuyWorlds",
-    Default = false,
-    Callback = function(bool)
-      getgenv().autobuyworlds = bool
-      print("AutoBuyWorlds is", bool)
-      if bool then
-        local ignoreList = ignoreParams[selectedworld]
-        AutoBuyWorlds(unpack(ignoreList))
-      end
-    end
-  })
-
-
-
 local Tab = Window:MakeTab({
 	Name = "Hatching",
 	Icon = "rbxassetid://4483345998",
@@ -626,12 +642,6 @@ Tab:AddToggle({
     end    
 })
 
-Tab:AddButton({
-	Name = "Remove Egg Animation",
-	Callback = function()
-        game:GetService("Players").LocalPlayer.PlayerGui.HatchFrame:Destroy()
-  	end    
-})
 
 
 local Tab = Window:MakeTab({
@@ -726,7 +736,7 @@ local Section = Tab:AddSection({
 })
 
 Tab:AddDropdown({
-	Name = "Select UI/Shop",
+	Name = "Tp UI/Shop",
 	Default = "CraftBats",
 	Options = uiopentable,
 	Callback = function(value)
@@ -743,6 +753,9 @@ Tab:AddButton({
 })
 
 
+
+
+
 local Tab = Window:MakeTab({
 	Name = "Misc",
 	Icon = "rbxassetid://4483345998",
@@ -750,19 +763,18 @@ local Tab = Window:MakeTab({
 })
 
 Tab:AddSlider({
-	Name = "Walkspeed",
-	Min = 10,
-	Max = 500,
-	Default = 50,
-	Color = Color3.fromRGB(255, 255, 255),
-	Increment = 1,
-	ValueName = "Walkspeed",
-	Callback = function(value)
-        speedselected = value
-        SpeedChanger(speedselected)
-
+    Name = "Walkspeed",
+    Min = 10,
+    Max = 500,
+    Default = 50,
+    Color = Color3.fromRGB(255, 255, 255),
+    Increment = 1,
+    ValueName = "Walkspeed",
+    Callback = function(value)
+        SpeedChanger(value)
     end
 })
+
 
 Tab:AddButton({
 	Name = "Admin",
