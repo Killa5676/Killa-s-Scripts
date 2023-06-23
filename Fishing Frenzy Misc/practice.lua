@@ -1,4 +1,4 @@
-local dropdown = AddDropdown({
+AddDropdown({
     Name = "Color",
     List = {"Red", "Green", "Blue"},
     Multi = true,
