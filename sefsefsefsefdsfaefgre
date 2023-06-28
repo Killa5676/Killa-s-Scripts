@@ -1,0 +1,1920 @@
+game:GetService("Players").LocalPlayer.Idled:connect(
+    function()
+	game:GetService("VirtualUser"):Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+	wait(1)
+	game:GetService("VirtualUser"):Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+end)
+
+repeat
+	wait()
+until game:IsLoaded()
+
+pcall(
+    function()
+	if ScriptForgeLoaded then
+		warn("[ScriptForge]: Script Is Already Loaded!")
+		return
+	else
+		getgenv().ScriptForgeLoaded = true
+		wait(math.random(0.3, 0.7) + math.random(0.1, 0.4) + math.random(0.4, 0.6))
+		print("[ScriptForge]: Loading Script!")
+		wait(math.random(0.3, 0.7) + math.random(0.1, 0.4) + math.random(0.4, 0.6))
+		local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
+            --farming
+		getgenv().autotrainbarbell = false
+		getgenv().autotrainbicep = false
+		getgenv().autotrainhand = false
+		getgenv().autofight = false
+		getgenv().autotrainknuckle = false
+		getgenv().autorebirth = false
+		getgenv().autoclaimgift = false
+		getgenv().autospin = false
+		getgenv().autoredeemcodes = false
+		getgenv().autoclaimdaily = false
+		getgenv().autobuytrails = false
+		getgenv().autocraft = false
+		getgenv().autoequipbestpet = false
+		getgenv().autoinstantgold = false
+		getgenv().autohatch = false
+		getgenv().selectedegg = nil
+		getgenv().selectbag = nil
+		getgenv().selectgrip = nil
+		getgenv().selectdumbell = nil
+		getgenv().selectbarbell = nil
+		getgenv().selectpet = nil
+		getgenv().selectedmethod = nil
+		getgenv().selectedegg = nil
+		getgenv().selectfight2 = nil
+		getgenv().selectbag2 = nil
+		getgenv().selectgrip2 = nil
+		getgenv().selectdumbell2 = nil
+		getgenv().selectbarbell2 = nil
+		getgenv().selectfight3 = nil
+		getgenv().selectbag3 = nil
+		getgenv().selectgrip3 = nil
+		getgenv().selectdumbell3 = nil
+		getgenv().selectbarbell3 = nil
+		getgenv().selectdelete = nil
+		getgenv().selectdelete2 = nil
+		getgenv().selectdelete3 = nil
+		getgenv().selectdelete4 = nil
+		getgenv().selectdelete5 = nil
+		getgenv().Potion = "Wins"
+		getgenv().AutoPotion = false
+		local Players = game:GetService("Players")
+		local tween_s = game:GetService("TweenService")
+		local tween_info = TweenInfo.new(0.5, Enum.EasingStyle.Linear)
+		local lp = Players.LocalPlayer
+		function Tween(v)
+			if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
+				local cf = CFrame.new(v)
+				local a = tween_s:Create(
+                        lp.Character.HumanoidRootPart, tween_info, {
+					CFrame = cf
+				})
+				a:Play()
+			end
+		end
+		function getcurrentPlayerPOS()
+			local plyr = game.Players.LocalPlayer
+			if plyr.Character then
+				return plyr.Character.HumanoidRootPart
+			end
+			return false
+		end
+		function teleporto(placeCframe)
+			local plyr = game.Players.LocalPlayer
+			if plyr.Character then
+				plyr.Character.HumanoidRootPart.CFrame = placeCframe
+			end
+		end
+		local function AutoTrainBicep(world, type)
+			spawn(
+                    function()
+				while getgenv().autotrainbicep == true do
+					local args = {
+						[1] = world,
+						[2] = "Dumbells",
+						[3] = type
+					}
+					game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_knit@1.4.7"):WaitForChild("knit"):WaitForChild("Services"):WaitForChild("ToolService"):WaitForChild("RE"):WaitForChild("onGuiEquipRequest"):FireServer(unpack(args))
+					game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_knit@1.4.7"):WaitForChild("knit"):WaitForChild("Services"):WaitForChild("ToolService"):WaitForChild("RE"):WaitForChild("onClick"):FireServer()
+					task.wait()
+					if getgenv().autotrainbicep == false then
+						break
+					end
+				end
+			end)
+		end
+		local function AutoTrainHand(world, type)
+			spawn(
+                    function()
+				while getgenv().autotrainhand == true do
+					local args = {
+						[1] = world,
+						[2] = "Grips",
+						[3] = type
+					}
+					game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_knit@1.4.7"):WaitForChild("knit"):WaitForChild("Services"):WaitForChild("ToolService"):WaitForChild("RE"):WaitForChild("onGuiEquipRequest"):FireServer(unpack(args))
+					game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_knit@1.4.7"):WaitForChild("knit"):WaitForChild("Services"):WaitForChild("ToolService"):WaitForChild("RE"):WaitForChild("onClick"):FireServer()
+					task.wait()
+					if getgenv().autotrainhand == false then
+						break
+					end
+				end
+			end)
+		end
+		local function AutoTrainKnuckle(world, type, bag, zone)
+			local initialPosition = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+			local punchBag = workspace.Zones[zone].Interactables.Training.PunchBags[tostring(bag)]
+			local teleportPos = punchBag.Primary.CFrame.Position + Vector3.new(5, 0, 0)
+			Tween(teleportPos)
+			local characterAddedConnection
+			characterAddedConnection = game.Players.LocalPlayer.CharacterAdded:Connect(
+                    function(character)
+				character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(teleportPos)
+			end)
+			spawn(
+                    function()
+				game.Players.LocalPlayer.Character.Humanoid:MoveTo(initialPosition)
+				while getgenv().autotrainknuckle == true do
+					local args = {
+						[1] = world,
+						[2] = type
+					}
+					game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_knit@1.4.7"):WaitForChild("knit"):WaitForChild("Services"):WaitForChild("PunchBagService"):WaitForChild("RE"):WaitForChild("onGiveStats"):FireServer(unpack(args))
+					task.wait()
+					if getgenv().autotrainknuckle == false then
+						break
+					end
+				end
+				characterAddedConnection:Disconnect()
+				game.Players.LocalPlayer.Character.Humanoid:MoveTo(initialPosition)
+			end)
+		end
+		local function AutoFight(world, type, world1, type1)
+			spawn(
+                    function()
+				while getgenv().autofight == true do
+					local args = {
+						[1] = type,
+						[2] = workspace:WaitForChild("Zones"):WaitForChild(world1):WaitForChild("Interactables"):WaitForChild("ArmWrestling"):WaitForChild("NPC"):WaitForChild(type1),
+						[3] = world
+					}
+					game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_knit@1.4.7"):WaitForChild("knit"):WaitForChild("Services"):WaitForChild("ArmWrestleService"):WaitForChild("RE"):WaitForChild("onEnterNPCTable"):FireServer(unpack(args))
+					game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_knit@1.4.7"):WaitForChild("knit"):WaitForChild("Services"):WaitForChild("ArmWrestleService"):WaitForChild("RE"):WaitForChild("onClickRequest"):FireServer()
+					task.wait()
+					if getgenv().autofight == false then
+						break
+					end
+				end
+			end)
+		end
+		local function AutoTrainBarbell(world, type)
+			spawn(
+                    function()
+				while getgenv().autotrainbarbell == true do
+					local args = {
+						[1] = world,
+						[2] = "Barbells",
+						[3] = type
+					}
+					game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_knit@1.4.7"):WaitForChild("knit"):WaitForChild("Services"):WaitForChild("ToolService"):WaitForChild("RE"):WaitForChild("onEquipRequest"):FireServer(unpack(args))
+					game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_knit@1.4.7"):WaitForChild("knit"):WaitForChild("Services"):WaitForChild("ToolService"):WaitForChild("RE"):WaitForChild("onClick"):FireServer()
+					task.wait()
+					if getgenv().autotrainbarbell == false then
+						break
+					end
+				end
+			end)
+		end
+		local function AutoClaimGift()
+			spawn(
+                    function()
+				while getgenv().autoclaimgift == true do
+					for i = 1, 20 do
+						local args = {
+							[1] = i
+						}
+						game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_knit@1.4.7"):WaitForChild("knit"):WaitForChild("Services"):WaitForChild("TimedRewardService"):WaitForChild("RE"):WaitForChild("onClaim"):FireServer(unpack(args))
+						task.wait()
+						if getgenv().autoclaimgift == false then
+							break
+						end
+					end
+				end
+			end)
+		end
+        local function AutoInstantGold()
+            spawn(function()
+                while getgenv().autoinstantgold == true do
+                    local player = game:GetService("Players").LocalPlayer
+                    local petContainer = player.PlayerGui.GameUI.Menus.PetInventory.Container.ScrollingFrame.Pets
+        
+                    local petNames = {}
+                    for _, pet in ipairs(petContainer:GetChildren()) do
+                        if pet:IsA("Frame") and not pet:IsA("UIGridLayout") and not pet:IsA("UIPadding") then
+                            table.insert(petNames, pet.Name)
+                        end
+                    end
+        
+                    for _, petID in ipairs(petNames) do
+                        local args = { petID, petID, petID, petID, petID }
+                        local goldifyRemote = game:GetService("ReplicatedStorage").Packages._Index["sleitnick_knit@1.4.7"].knit.Services.PetService.RF.goldify
+                        goldifyRemote:InvokeServer(args)
+        
+                        if not getgenv().autoinstantgold then
+                            break
+                        end
+                    end
+                    wait(0) 
+                end
+            end)
+        end
+        
+		local function AutoSpin()
+			spawn(
+                    function()
+				while getgenv().autospin == true do
+					game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_knit@1.4.7"):WaitForChild("knit"):WaitForChild("Services"):WaitForChild("SpinService"):WaitForChild("RE"):WaitForChild("onSpinRequest"):FireServer()
+					task.wait()
+					if getgenv().autospin == false then
+						break
+					end
+				end
+			end)
+		end
+		local function AutoRebirth()
+			spawn(
+                    function()
+				while getgenv().autorebirth == true do
+					game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_knit@1.4.7"):WaitForChild("knit"):WaitForChild("Services"):WaitForChild("RebirthService"):WaitForChild("RE"):WaitForChild("onRebirthRequest"):FireServer()
+					task.wait()
+					if getgenv().autorebirth == false then
+						break
+					end
+				end
+			end)
+		end
+		local function AutoClaimDaily()
+			spawn(
+                    function()
+				while getgenv().autoclaimdaily == true do
+					game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_knit@1.4.7"):WaitForChild("knit"):WaitForChild("Services"):WaitForChild("DailyRewardService"):WaitForChild("RE"):WaitForChild("onClaimReward"):FireServer()
+					task.wait()
+					if getgenv().autoclaimdaily == false then
+						break
+					end
+				end
+			end)
+		end
+		local function AutoRedeemCodes()
+			spawn(
+                    function()
+				game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_knit@1.4.7"):WaitForChild("knit"):WaitForChild("Services"):WaitForChild("CodeRedemptionService"):WaitForChild("RE"):WaitForChild("onRedeem"):FireServer("knighty")
+				game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_knit@1.4.7"):WaitForChild("knit"):WaitForChild("Services"):WaitForChild("CodeRedemptionService"):WaitForChild("RE"):WaitForChild("onRedeem"):FireServer("Axel")
+				game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_knit@1.4.7"):WaitForChild("knit"):WaitForChild("Services"):WaitForChild("CodeRedemptionService"):WaitForChild("RE"):WaitForChild("onRedeem"):FireServer("noob")
+				task.wait()
+			end)
+		end
+		local function AutoHatch()
+			spawn(
+                    function()
+				while getgenv().autohatch == true do
+					local args = {
+						[1] = getgenv().selectedegg,
+                        [2] = {},
+						[3] = getgenv().selectedmethod
+					}
+					game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_knit@1.4.7"):WaitForChild("knit"):WaitForChild("Services"):WaitForChild("EggService"):WaitForChild("RF"):WaitForChild("purchaseEgg"):InvokeServer(unpack(args))
+					task.wait()
+					if getgenv().autohatch == false then
+						break
+					end
+				end
+			end)
+		end
+		local function AutoCraft()
+			while getgenv().autocraft == true do
+				local player = game:GetService("Players").LocalPlayer
+				local petContainer = player.PlayerGui.GameUI.Menus.PetInventory.Container.ScrollingFrame.Pets
+				local petNames = {}
+				for _, pet in ipairs(petContainer:GetChildren()) do
+					if pet:IsA("Frame") and not pet:IsA("UIGridLayout") and not pet:IsA("UIPadding") then
+						table.insert(petNames, pet.Name)
+					end
+				end
+				local args = {
+					[2] = true
+				}
+				for _, petName in ipairs(petNames) do
+					if not getgenv().autocraft then
+						break
+					end
+					args[1] = petName
+					local remotePath = game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_knit@1.4.7"):WaitForChild("knit"):WaitForChild("Services"):WaitForChild("PetService"):WaitForChild("RF"):WaitForChild("craft")
+					remotePath:InvokeServer(unpack(args))
+					if not getgenv().autocraft then
+						break
+					end
+				end
+			end
+		end
+		local function AutoEquipBestPet()
+			spawn(function ()
+				while getgenv().autoequipbestpet == true do
+					local args = {
+						[1] = game:GetService("Players").LocalPlayer
+					}
+					game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_knit@1.4.7"):WaitForChild("knit"):WaitForChild("Services"):WaitForChild("PetService"):WaitForChild("RF"):WaitForChild("equipBest"):InvokeServer(unpack(args))
+                    wait(0)
+						break
+					end
+			end)
+		end
+		local function AutoInstantGold()
+			spawn(
+                    function()
+				while getgenv().autoinstantgold == true do
+					local player = game:GetService("Players").LocalPlayer
+					local petContainer = player.PlayerGui.GameUI.Menus.PetInventory.Container.ScrollingFrame.Pets
+					local petNames = {}
+					for _, pet in ipairs(petContainer:GetChildren()) do
+						if pet:IsA("Frame") and not pet:IsA("UIGridLayout") and not pet:IsA("UIPadding") then
+							table.insert(petNames, pet.Name)
+						end
+					end
+					for _, petID in ipairs(petNames) do
+						local args = {
+							petID,
+							petID,
+							petID,
+							petID,
+							petID
+						}
+						local goldifyRemote = game:GetService("ReplicatedStorage").Packages._Index["sleitnick_knit@1.4.7"].knit.Services.PetService.RF.goldify
+						goldifyRemote:InvokeServer(args)
+						if not getgenv().autoinstantgold then
+							break
+						end
+					end
+				end
+			end)
+		end
+		function getLeaderStats(player, index)
+			local leaderstats = game.Players[player]:WaitForChild("leaderstats")
+			local value = leaderstats[index].Value
+			return value
+		end
+		local Window = Rayfield:CreateWindow(
+                {
+			Name = "ScriptForge | Arm Wrestle Simulator",
+			LoadingTitle = "Arm Wrestle Simulator",
+			LoadingSubtitle = "Made By Killa // N3xKxp3r // xShadow",
+			ConfigurationSaving = {
+				Enabled = true,
+				FolderName = "ScriptForge",
+				FileName = "ScriptForge",
+				Discord = {
+					Enabled = true,
+					Invite = "bd9phbXu",
+					RememberJoins = false
+				},
+			}
+		})
+		local FarmingTab = Window:CreateTab("Farming Misc")
+		local Section = FarmingTab:CreateSection("Main")
+		local Label3 = FarmingTab:CreateLabel("nil")
+		local Label4 = FarmingTab:CreateLabel("nil")
+		local Label5 = FarmingTab:CreateLabel("nil")
+		local Label6 = FarmingTab:CreateLabel("nil")
+		local Label7 = FarmingTab:CreateLabel("nil")
+		local Toggle = FarmingTab:CreateToggle(
+                {
+			Name = "Auto Rebirth",
+			CurrentValue = false,
+			Callback = function(Value)
+				getgenv().autorebirth = Value
+				if Value then
+					AutoRebirth()
+				end
+			end
+		})
+		local Toggle = FarmingTab:CreateToggle(
+                {
+			Name = "Auto Claim Gift",
+			CurrentValue = false,
+			Callback = function(Value)
+				getgenv().autoclaimgift = Value
+				if Value then
+					AutoClaimGift()
+				end
+			end
+		})
+		local Toggle = FarmingTab:CreateToggle(
+                {
+			Name = "Auto Spin",
+			CurrentValue = false,
+			Callback = function(Value)
+				getgenv().autospin = Value
+				if Value then
+					AutoSpin()
+				end
+			end
+		})
+		local Toggle = FarmingTab:CreateToggle(
+                {
+			Name = "Notifications (Off/On)",
+			CurrentValue = false,
+			Callback = function(Value)
+				getgenv().autospin = Value
+				if Value == true then
+					game:GetService("Players").LocalPlayer.PlayerGui.Notifications.Enabled = false
+				elseif Value == false then
+					game:GetService("Players").LocalPlayer.PlayerGui.Notifications.Enabled = true
+				end
+			end
+		})
+		local Toggle = FarmingTab:CreateToggle(
+                {
+			Name = "EggUI (Off/On)",
+			CurrentValue = false,
+			Callback = function(Value)
+				getgenv().autospin = Value
+				if Value == true then
+					game:GetService("Players").LocalPlayer.PlayerGui.OpenerUI.Enabled = false
+					game:GetService("Players").LocalPlayer.PlayerGui.EggGui.Enabled = false
+				elseif Value == false then
+					game:GetService("Players").LocalPlayer.PlayerGui.OpenerUI.Enabled = true
+					game:GetService("Players").LocalPlayer.PlayerGui.EggGui.Enabled = true
+				end
+			end
+		})
+		local Section = FarmingTab:CreateSection("Other")
+
+		local Toggle = FarmingTab:CreateToggle(
+			{
+			Name = "Auto Claim Daily",
+			CurrentValue = false,
+			Callback = function(Value)
+				getgenv().autoclaimdaily = Value
+				if Value then
+					AutoClaimDaily()
+				end
+			end
+		})
+		local Toggle = FarmingTab:CreateToggle({
+			Name = "Auto Potion",
+			CurrentValue = false,
+			Callback = function(Value)
+				if Value == true then
+					getgenv().AutoPotion = Value
+					spawn(function()
+						while Value do
+							local args = {
+								[1] = getgenv().Potion
+							}
+							game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_knit@1.4.7"):WaitForChild("knit"):WaitForChild("Services"):WaitForChild("BoostService"):WaitForChild("RE"):WaitForChild("useBoost"):FireServer(unpack(args))
+							task.wait(1)
+						end
+					end)
+				end
+			end,
+		})
+		local Dropdown = FarmingTab:CreateDropdown({
+			Name = "Select Potion",
+			Options = {
+				"Wins",
+				"Luck",
+				"Golden",
+				"Void"
+			},
+			CurrentOption = {
+				"Wins"
+			},
+			MultipleOptions = false,
+			Callback = function(Option)
+				if Option ~= nil then
+					getgenv().Potion = Option[1]
+				end
+			end,
+		})
+
+		local Button = FarmingTab:CreateButton(
+                {
+			Name = "Redeem Codes",
+			Callback = function()
+				AutoRedeemCodes()
+			end
+		})
+		local Button = FarmingTab:CreateButton({
+			Name = "Optimise",
+			Callback = function()
+				local lighting = game.Lighting;
+				local terrain = game.Workspace.Terrain;
+				terrain.WaterWaveSize = 0;
+				terrain.WaterWaveSpeed = 0;
+				terrain.WaterReflectance = 0;
+				terrain.WaterTransparency = 0;
+				lighting.GlobalShadows = false;
+				lighting.FogStart = 0;
+				lighting.FogEnd = 0;
+				lighting.Brightness = 0;
+				settings().Rendering.QualityLevel = "Level01"
+				for i, v in pairs(game:GetDescendants()) do
+					if v:IsA("Part") or v:IsA("Union") or v:IsA("CornerWedgePart") or v:IsA("TrussPart") then
+						v.Material = "Plastic"
+						v.Reflectance = 0
+					elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
+						v.Lifetime = NumberRange.new(0)
+					elseif v:IsA("Explosion") then
+						v.BlastPressure = 1;
+						v.BlastRadius = 1
+					elseif v:IsA("Fire") or v:IsA("SpotLight") or v:IsA("Smoke") or v:IsA("Sparkles") then
+						v.Enabled = false
+					elseif v:IsA("MeshPart") then
+						v.Material = "Plastic"
+						v.Reflectance = 0
+					end
+				end;
+				for i, e in pairs(lighting:GetChildren()) do
+					if e:IsA("BlurEffect") or e:IsA("SunRaysEffect") or e:IsA("ColorCorrectionEffect") or e:IsA("BloomEffect") or e:IsA("DepthOfFieldEffect") then
+						e.Enabled = false
+					end
+				end
+			end,
+		})
+
+		local Slider = FarmingTab:CreateSlider({
+			Name = "Fps",
+			Range = {
+				0,
+				500
+			},
+			Increment = 1,
+			Suffix = "Fps",
+			CurrentValue = 0,
+			Callback = function(Value)
+				while task.wait() do
+					setfpscap(Value)
+				end
+			end,
+		})
+
+		local Slider = FarmingTab:CreateSlider({
+			Name = "Walk Speed",
+			Range = {
+				0,
+				500
+			},
+			Increment = 1,
+			Suffix = "Speed",
+			CurrentValue = 16,
+			Callback = function(Value)
+				while task.wait() do
+					game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
+				end
+			end,
+		})
+
+		local FarmingTab = Window:CreateTab("Farming World 1")
+
+		local Button = FarmingTab:CreateButton(
+                {
+			Name = "TP WORLD 1",
+			Callback = function()
+				game:GetService("ReplicatedStorage").Packages._Index["sleitnick_knit@1.4.7"].knit.Services.ZoneService.RE.teleport:FireServer(workspace.Zones["1"].Interactables.Teleports.Locations.BackToSchool)
+			end
+		})
+
+		local Section = FarmingTab:CreateSection("Select Tools")
+		local Dropdown = FarmingTab:CreateDropdown(
+                {
+			Name = "Select Dumbell",
+			Options = {
+				"1Kg",
+				"2Kg",
+				"3Kg",
+				"4Kg",
+				"5Kg",
+				"10Kg",
+				"15Kg",
+				"20Kg",
+				"25Kg",
+				"50Kg",
+				"100Kg",
+				"250Kg"
+			},
+			CurrentOption = {
+				"Choose Option"
+			},
+			MultipleOptions = false,
+			Callback = function(Option)
+				if Option ~= nil then
+					getgenv().selectdumbell = Option[1]
+				end
+			end
+		})
+		local Dropdown = FarmingTab:CreateDropdown(
+                {
+			Name = "Select Grip",
+			Options = {
+				"1Kg",
+				"2Kg",
+				"3Kg",
+				"4Kg",
+				"5Kg",
+				"10Kg",
+				"15Kg",
+				"20Kg",
+				"25Kg",
+				"50Kg",
+				"100Kg",
+				"250Kg"
+			},
+			CurrentOption = {
+				"Choose Option"
+			},
+			MultipleOptions = false,
+			Callback = function(Option)
+				if Option ~= nil then
+					getgenv().selectgrip = Option[1]
+				end
+			end
+		})
+		local Dropdown = FarmingTab:CreateDropdown(
+                {
+			Name = "Select Punching Bag",
+			Options = {
+				"Tier1",
+				"Tier2",
+				"Tier3",
+				"Tier4",
+				"Tier5",
+				"Tier6",
+				"VIP"
+			},
+			CurrentOption = {
+				"Choose Option"
+			},
+			MultipleOptions = false,
+			Callback = function(Option)
+				if Option ~= nil then
+					getgenv().selectbag = Option[1]
+				end
+			end
+		})
+		local Dropdown = FarmingTab:CreateDropdown(
+                {
+			Name = "Select Barbell",
+			Options = {
+				"Tier1",
+				"Tier2",
+				"Tier3"
+			},
+			CurrentOption = {
+				"Choose Option"
+			},
+			MultipleOptions = false,
+			Callback = function(Option)
+				if Option ~= nil then
+					getgenv().selectbarbell = Option[1]
+				end
+			end
+		})
+		local Dropdown = FarmingTab:CreateDropdown(
+                {
+			Name = "Select NPC",
+			Options = {
+				"Bully",
+				"Teacher",
+				"Gym",
+				"MafiaBoss",
+				"Champion"
+			},
+			CurrentOption = {
+				"Choose Option"
+			},
+			MultipleOptions = false,
+			Callback = function(Option)
+				if Option ~= nil then
+					getgenv().selectfight = Option[1]
+				end
+			end
+		})
+		local Section = FarmingTab:CreateSection("Farms")
+		local Toggle = FarmingTab:CreateToggle(
+                {
+			Name = "Auto Train Bicep",
+			CurrentValue = false,
+			Callback = function(Value)
+				getgenv().autotrainbicep = Value
+				if Value then
+					AutoTrainBicep("1", getgenv().selectdumbell)
+				end
+			end
+		})
+		local Toggle = FarmingTab:CreateToggle(
+                {
+			Name = "Auto Train Hand",
+			CurrentValue = false,
+			Callback = function(Value)
+				getgenv().autotrainhand = Value
+				if Value then
+					AutoTrainHand("1", getgenv().selectgrip)
+				end
+			end
+		})
+		local Toggle = FarmingTab:CreateToggle(
+                {
+			Name = "Auto Train Knuckle",
+			CurrentValue = false,
+			Callback = function(Value)
+				getgenv().autotrainknuckle = Value
+				if Value then
+					AutoTrainKnuckle("1", getgenv().selectbag, getgenv().selectbag, "1")
+				end
+			end
+		})
+		local Toggle = FarmingTab:CreateToggle(
+                {
+			Name = "Auto Train BarBell",
+			CurrentValue = false,
+			Callback = function(Value)
+				getgenv().autotrainbarbell = Value
+				if Value then
+					AutoTrainBarbell(1, getgenv().selectbarbell)
+				end
+			end
+		})
+		local Toggle = FarmingTab:CreateToggle(
+                {
+			Name = "Auto Fight",
+			CurrentValue = false,
+			Callback = function(Value)
+				getgenv().autofight = Value
+				if Value then
+					AutoFight("1", getgenv().selectfight, "1", getgenv().selectfight)
+				end
+			end
+		})
+		local FarmingTab = Window:CreateTab("Farming World 2")
+		local Button = FarmingTab:CreateButton(
+                {
+			Name = "TP WORLD 2",
+			Callback = function()
+				game:GetService("ReplicatedStorage").Packages._Index["sleitnick_knit@1.4.7"].knit.Services.ZoneService.RE.teleport:FireServer(workspace.Zones["2"].Interactables.Teleports.Locations.Futuristic)
+			end
+		})
+		local Section = FarmingTab:CreateSection("Select Tools")
+		local Dropdown = FarmingTab:CreateDropdown(
+                {
+			Name = "Select Dumbell",
+			Options = {
+				"300Kg",
+				"400Kg",
+				"500Kg",
+				"650Kg",
+				"800Kg",
+				"1000Kg",
+				"1500Kg",
+				"2000Kg",
+				"2500Kg",
+				"3000Kg",
+				"3500Kg",
+				"4000Kg"
+			},
+			CurrentOption = {
+				"Choose Option"
+			},
+			MultipleOptions = false,
+			Callback = function(Option)
+				if Option ~= nil then
+					getgenv().selectdumbell2 = Option[1]
+				end
+			end
+		})
+		local Dropdown = FarmingTab:CreateDropdown(
+                {
+			Name = "Select Grip",
+			Options = {
+				"300Kg",
+				"350Kg",
+				"400Kg",
+				"450Kg",
+				"500Kg",
+				"600Kg",
+				"700Kg",
+				"800Kg",
+				"900Kg",
+				"1000Kg",
+				"1250Kg",
+				"1500Kg"
+			},
+			CurrentOption = {
+				"Choose Option"
+			},
+			MultipleOptions = false,
+			Callback = function(Option)
+				if Option ~= nil then
+					getgenv().selectgrip2 = Option[1]
+				end
+			end
+		})
+		local Dropdown = FarmingTab:CreateDropdown(
+                {
+			Name = "Select Punching Bag",
+			Options = {
+				"Tier1",
+				"Tier2",
+				"Tier3",
+				"Tier4",
+				"Tier5",
+				"Tier6",
+				"VIP"
+			},
+			CurrentOption = {
+				"Choose Option"
+			},
+			MultipleOptions = false,
+			Callback = function(Option)
+				if Option ~= nil then
+					getgenv().selectbag2 = Option[1]
+				end
+			end
+		})
+		local Dropdown = FarmingTab:CreateDropdown(
+                {
+			Name = "Select Barbell",
+			Options = {
+				"Tier4",
+				"Tier5",
+				"Tier6"
+			},
+			CurrentOption = {
+				"Choose Option"
+			},
+			MultipleOptions = false,
+			Callback = function(Option)
+				if Option ~= nil then
+					getgenv().selectbarbell2 = Option[1]
+				end
+			end
+		})
+		local Dropdown = FarmingTab:CreateDropdown(
+                {
+			Name = "Select NPC",
+			Options = {
+				"ScrapTrader",
+				"CyberCop",
+				"SlicerAssassin",
+				"RipperDoc",
+				"RogueAi"
+			},
+			CurrentOption = {
+				"Choose Option"
+			},
+			MultipleOptions = false,
+			Callback = function(Option)
+				if Option ~= nil then
+					getgenv().selectfight2 = Option[1]
+				end
+			end
+		})
+		local Section = FarmingTab:CreateSection("Farms")
+		local Toggle = FarmingTab:CreateToggle(
+                {
+			Name = "Auto Train Bicep",
+			CurrentValue = false,
+			Callback = function(Value)
+				getgenv().autotrainbicep = Value
+				if Value then
+					AutoTrainBicep("2", getgenv().selectdumbell2)
+				end
+			end
+		})
+		local Toggle = FarmingTab:CreateToggle(
+                {
+			Name = "Auto Train Hand",
+			CurrentValue = false,
+			Callback = function(Value)
+				getgenv().autotrainhand = Value
+				if Value then
+					AutoTrainHand("2", getgenv().selectgrip2)
+				end
+			end
+		})
+		local Toggle = FarmingTab:CreateToggle(
+                {
+			Name = "Auto Train Knuckle",
+			CurrentValue = false,
+			Callback = function(Value)
+				getgenv().autotrainknuckle = Value
+				if Value then
+					AutoTrainKnuckle("2", getgenv().selectbag2, getgenv().selectbag2, "2")
+				end
+			end
+		})
+		local Toggle = FarmingTab:CreateToggle(
+                {
+			Name = "Auto Train BarBell",
+			CurrentValue = false,
+			Callback = function(Value)
+				getgenv().autotrainbarbell = Value
+				if Value then
+					AutoTrainBarbell(2, getgenv().selectbarbell2)
+				end
+			end
+		})
+		local Toggle = FarmingTab:CreateToggle(
+                {
+			Name = "Auto Fight",
+			CurrentValue = false,
+			Callback = function(Value)
+				getgenv().autofight = Value
+				if Value then
+					AutoFight("2", getgenv().selectfight2, "2", getgenv().selectfight2)
+				end
+			end
+		})
+		local FarmingTab = Window:CreateTab("Farming World 3")
+		local Button = FarmingTab:CreateButton(
+                {
+			Name = "TP WORLD 3",
+			Callback = function()
+				game:GetService("ReplicatedStorage").Packages._Index["sleitnick_knit@1.4.7"].knit.Services.ZoneService.RE.teleport:FireServer(workspace.Zones["3"].Interactables.Teleports.Locations.Beach)
+			end
+		})
+		local Section = FarmingTab:CreateSection("Select Tools")
+		local Dropdown = FarmingTab:CreateDropdown(
+                {
+			Name = "Select Dumbell",
+			Options = {
+				"5000Kg",
+				"6000Kg",
+				"7500Kg",
+				"10000Kg",
+				"12500Kg",
+				"15000Kg",
+				"20000Kg",
+				"25000Kg",
+				"30000Kg",
+				"35000Kg",
+				"40000Kg",
+				"45000Kg"
+			},
+			CurrentOption = {
+				"Choose Option"
+			},
+			MultipleOptions = false,
+			Callback = function(Option)
+				if Option ~= nil then
+					getgenv().selectdumbell3 = Option[1]
+				end
+			end
+		})
+		local Dropdown = FarmingTab:CreateDropdown(
+                {
+			Name = "Select Grip",
+			Options = {
+				"5000Kg",
+				"6000Kg",
+				"7500Kg",
+				"10000Kg",
+				"12500Kg",
+				"15000Kg",
+				"20000Kg",
+				"25000Kg",
+				"30000Kg",
+				"35000Kg",
+				"40000Kg",
+				"45000Kg"
+			},
+			CurrentOption = {
+				"Choose Option"
+			},
+			MultipleOptions = false,
+			Callback = function(Option)
+				if Option ~= nil then
+					getgenv().selectgrip3 = Option[1]
+				end
+			end
+		})
+		local Dropdown = FarmingTab:CreateDropdown(
+                {
+			Name = "Select Punching Bag",
+			Options = {
+				"Tier1",
+				"Tier2",
+				"Tier3",
+				"Tier4",
+				"Tier5",
+				"Tier6",
+				"VIP"
+			},
+			CurrentOption = {
+				"Choose Option"
+			},
+			MultipleOptions = false,
+
+			Callback = function(Option)
+				if Option ~= nil then
+					getgenv().selectbag3 = Option[1]
+				end
+			end
+		})
+		local Dropdown = FarmingTab:CreateDropdown(
+                {
+			Name = "Select Barbell",
+			Options = {
+				"Tier7",
+				"Tier8",
+				"Tier9"
+			},
+			CurrentOption = {
+				"Choose Option"
+			},
+			MultipleOptions = false,
+			Callback = function(Option)
+				if Option ~= nil then
+					getgenv().selectbarbell3 = Option[1]
+				end
+			end
+		})
+		local Dropdown = FarmingTab:CreateDropdown(
+                {
+			Name = "Select NPC",
+			Options = {
+				"CocoNut",
+				"FatPirate",
+				"MermaidKing",
+				"FriendlyShark",
+				"KrakenBoss"
+			},
+			CurrentOption = {
+				"Choose Option"
+			},
+			MultipleOptions = false,
+			Callback = function(Option)
+				if Option ~= nil then
+					getgenv().selectfight3 = Option[1]
+				end
+			end
+		})
+		local Section = FarmingTab:CreateSection("Farms")
+		local Toggle = FarmingTab:CreateToggle(
+                {
+			Name = "Auto Train Bicep",
+			CurrentValue = false,
+			Callback = function(Value)
+				getgenv().autotrainbicep = Value
+				if Value then
+					AutoTrainBicep("3", getgenv().selectdumbell3)
+				end
+			end
+		})
+		local Toggle = FarmingTab:CreateToggle(
+                {
+			Name = "Auto Train Hand",
+			CurrentValue = false,
+			Callback = function(Value)
+				getgenv().autotrainhand = Value
+				if Value then
+					AutoTrainHand("3", getgenv().selectgrip3)
+				end
+			end
+		})
+		local Toggle = FarmingTab:CreateToggle(
+                {
+			Name = "Auto Train Knuckle",
+			CurrentValue = false,
+			Callback = function(Value)
+				getgenv().autotrainknuckle = Value
+				if Value then
+					AutoTrainKnuckle("3", getgenv().selectbag3, getgenv().selectbag3, "3")
+				end
+			end
+		})
+		local Toggle = FarmingTab:CreateToggle(
+                {
+			Name = "Auto Train BarBell",
+			CurrentValue = false,
+			Callback = function(Value)
+				getgenv().autotrainbarbell = Value
+				if Value then
+					AutoTrainBarbell(3, getgenv().selectbarbell3)
+				end
+			end
+		})
+		local Toggle = FarmingTab:CreateToggle(
+                {
+			Name = "Auto Fight",
+			CurrentValue = false,
+			Callback = function(Value)
+				getgenv().autofight = Value
+				if Value then
+					AutoFight("3", getgenv().selectfight3, "3", getgenv().selectfight3)
+				end
+			end
+		})
+		local HatchingTab = Window:CreateTab("Hatching")
+		local Section = HatchingTab:CreateSection("Main")
+		local DropdownMethod = HatchingTab:CreateDropdown(
+                {
+			Name = "Select Method",
+			Options = {
+				"Single",
+				"Triple"
+			},
+			CurrentOption = "Single",
+			MultipleOptions = false,
+			Callback = function(Option)
+				if Option ~= nil then
+					getgenv().selectedmethod = Option[1]
+					if getgenv().selectedmethod == "Single" then
+						getgenv().selectedmethod = false
+					else
+						getgenv().selectedmethod = true
+					end
+				end
+			end
+		})
+		local DropdownEgg = HatchingTab:CreateDropdown(
+                {
+			Name = "Select Egg",
+			Options = {
+				"GoldenOther",
+				"Ice",
+				"Icy",
+				"Inferno",
+				"Lava",
+				"Molten",
+				"Moon",
+				"Sand",
+				"Snowman",
+				"Solar",
+				"Stone",
+				"Sun",
+				"Warped",
+				"Blackhole",
+				"Burning",
+				"Cactus",
+				"Crystal",
+				"Earth",
+				"Coconut",
+				"Clam",
+				"KingFish",
+				"Poseidon",
+				"Treasure",
+				"Palm"
+			},
+			CurrentOption = "Select Egg",
+			MultipleOptions = false,
+			Callback = function(Option)
+				if Option ~= nil then
+					getgenv().selectedegg = Option[1]
+				end
+			end
+		})
+		local ToggleAutoHatch = HatchingTab:CreateToggle(
+                {
+			Name = "Auto Hatch",
+			CurrentValue = false,
+			Callback = function(Value)
+				getgenv().autohatch = Value
+				if Value == true then
+					AutoHatch()
+				end
+			end
+		})
+		local Section = HatchingTab:CreateSection("Other")
+		local ToggleAutoHatch = HatchingTab:CreateToggle(
+                {
+			Name = "Auto Equip Best Pet",
+			CurrentValue = false,
+			Callback = function(Value)
+				getgenv().autoequipbestpet = Value
+				if Value then
+					AutoEquipBestPet()
+				end
+			end
+		})
+		local Section = HatchingTab:CreateSection("Auto Delete Pets")
+		local DropdownEgg1 = HatchingTab:CreateDropdown(
+                {
+			Name = "1st Selection",
+			Options = {
+				"Aero",
+				"Adventrina",
+				"AngelBear",
+				"AngelCat",
+				"AngelCow",
+				"AngelElephant",
+				"ArcticFox",
+				"Astro",
+				"Astra",
+				"Axeli",
+				"Axolotl",
+				"BloodDragon",
+				"Bear",
+				"Bomba",
+				"Camel",
+				"Candy",
+				"Cow",
+				"Cat",
+				"Crab",
+				"Crocodile",
+				"DarkBat",
+				"Duck",
+				"Dragon",
+				"Dermite",
+				"Deer",
+				"Dog",
+				"Dragon",
+				"Drifter",
+				"Elephant",
+				"Electro",
+				"FlamingHorux",
+				"Fishy",
+				"FlameBeast",
+				"Flamey",
+				"FireBeater",
+				"Flamingo",
+				"Fox",
+				"Frog",
+				"GrayWolf",
+				"GrassMage",
+				"JetpackKid",
+				"Lion",
+				"Lizzard",
+				"MagicMage",
+				"Magnus",
+				"MinerBear",
+				"MinerCat",
+				"MinerDog",
+				"MinerPig",
+				"MinerRabbit",
+				"MinerTiger",
+				"Monkey",
+				"MoonBat",
+				"MoonOwl",
+				"MoonSpider",
+				"Mouse",
+				"Omnes",
+				"Orca",
+				"Owl",
+				"Parrot",
+				"Penguin",
+				"Pig",
+				"PolarBear",
+				"Quasar",
+				"Rogue",
+				"Scaler",
+				"Scorpion",
+				"Seal",
+				"Shark",
+				"Slime",
+				"Snowy",
+				"SolarDog",
+				"Spooky",
+				"Spider",
+				"Squirrel",
+				"Starski",
+				"SunBull",
+				"SunDeer",
+				"ToxicHydra",
+				"TheBeast",
+				"SunDog",
+				"SnowHorn",
+				"SunRabbit",
+				"Tetra",
+				"Tiger",
+				"IceDominus",
+				"Unicorn",
+				"Vangaurd",
+				"WaterMage",
+				"Wolf"
+			},
+			CurrentOption = "Aero",
+			MultipleOptions = false,
+			Callback = function(Option)
+				if Option ~= nil then
+					getgenv().selectdelete = Option[1]
+				end
+			end
+		})
+		local DropdownEgg1 = HatchingTab:CreateDropdown(
+                {
+			Name = "2nd Selection",
+			Options = {
+				"Aero",
+				"Adventrina",
+				"AngelBear",
+				"AngelCat",
+				"AngelCow",
+				"AngelElephant",
+				"ArcticFox",
+				"Astro",
+				"Astra",
+				"Axeli",
+				"Axolotl",
+				"BloodDragon",
+				"Bear",
+				"Bomba",
+				"Camel",
+				"Candy",
+				"Cow",
+				"Cat",
+				"Crab",
+				"Crocodile",
+				"DarkBat",
+				"Duck",
+				"Dragon",
+				"Dermite",
+				"Deer",
+				"Dog",
+				"Dragon",
+				"Drifter",
+				"Elephant",
+				"Electro",
+				"FlamingHorux",
+				"Fishy",
+				"FlameBeast",
+				"Flamey",
+				"FireBeater",
+				"Flamingo",
+				"Fox",
+				"Frog",
+				"GrayWolf",
+				"GrassMage",
+				"JetpackKid",
+				"Lion",
+				"Lizzard",
+				"MagicMage",
+				"Magnus",
+				"MinerBear",
+				"MinerCat",
+				"MinerDog",
+				"MinerPig",
+				"MinerRabbit",
+				"MinerTiger",
+				"Monkey",
+				"MoonBat",
+				"MoonOwl",
+				"MoonSpider",
+				"Mouse",
+				"Omnes",
+				"Orca",
+				"Owl",
+				"Parrot",
+				"Penguin",
+				"Pig",
+				"PolarBear",
+				"Quasar",
+				"Rogue",
+				"Scaler",
+				"Scorpion",
+				"Seal",
+				"Shark",
+				"Slime",
+				"Snowy",
+				"SolarDog",
+				"Spooky",
+				"Spider",
+				"Squirrel",
+				"Starski",
+				"SunBull",
+				"SunDeer",
+				"ToxicHydra",
+				"TheBeast",
+				"SunDog",
+				"SnowHorn",
+				"SunRabbit",
+				"Tetra",
+				"Tiger",
+				"IceDominus",
+				"Unicorn",
+				"Vangaurd",
+				"WaterMage",
+				"Wolf"
+			},
+			CurrentOption = "Aero",
+			MultipleOptions = false,
+			Callback = function(Option)
+				if Option ~= nil then
+					getgenv().selectdelete2 = Option[1]
+				end
+			end
+		})
+		local DropdownEgg1 = HatchingTab:CreateDropdown(
+                {
+			Name = "3rd Selection",
+			Options = {
+				"Aero",
+				"Adventrina",
+				"AngelBear",
+				"AngelCat",
+				"AngelCow",
+				"AngelElephant",
+				"ArcticFox",
+				"Astro",
+				"Astra",
+				"Axeli",
+				"Axolotl",
+				"BloodDragon",
+				"Bear",
+				"Bomba",
+				"Camel",
+				"Candy",
+				"Cow",
+				"Cat",
+				"Crab",
+				"Crocodile",
+				"DarkBat",
+				"Duck",
+				"Dragon",
+				"Dermite",
+				"Deer",
+				"Dog",
+				"Dragon",
+				"Drifter",
+				"Elephant",
+				"Electro",
+				"FlamingHorux",
+				"Fishy",
+				"FlameBeast",
+				"Flamey",
+				"FireBeater",
+				"Flamingo",
+				"Fox",
+				"Frog",
+				"GrayWolf",
+				"GrassMage",
+				"JetpackKid",
+				"Lion",
+				"Lizzard",
+				"MagicMage",
+				"Magnus",
+				"MinerBear",
+				"MinerCat",
+				"MinerDog",
+				"MinerPig",
+				"MinerRabbit",
+				"MinerTiger",
+				"Monkey",
+				"MoonBat",
+				"MoonOwl",
+				"MoonSpider",
+				"Mouse",
+				"Omnes",
+				"Orca",
+				"Owl",
+				"Parrot",
+				"Penguin",
+				"Pig",
+				"PolarBear",
+				"Quasar",
+				"Rogue",
+				"Scaler",
+				"Scorpion",
+				"Seal",
+				"Shark",
+				"Slime",
+				"Snowy",
+				"SolarDog",
+				"Spooky",
+				"Spider",
+				"Squirrel",
+				"Starski",
+				"SunBull",
+				"SunDeer",
+				"ToxicHydra",
+				"TheBeast",
+				"SunDog",
+				"SnowHorn",
+				"SunRabbit",
+				"Tetra",
+				"Tiger",
+				"IceDominus",
+				"Unicorn",
+				"Vangaurd",
+				"WaterMage",
+				"Wolf"
+			},
+			CurrentOption = "Aero",
+			MultipleOptions = false,
+			Callback = function(Option)
+				if Option ~= nil then
+					getgenv().selectdelete3 = Option[1]
+				end
+			end
+		})
+		local DropdownEgg1 = HatchingTab:CreateDropdown(
+			{
+			Name = "4rd Selection",
+			Options = {
+				"Aero",
+				"Adventrina",
+				"AngelBear",
+				"AngelCat",
+				"AngelCow",
+				"AngelElephant",
+				"ArcticFox",
+				"Astro",
+				"Astra",
+				"Axeli",
+				"Axolotl",
+				"BloodDragon",
+				"Bear",
+				"Bomba",
+				"Camel",
+				"Candy",
+				"Cow",
+				"Cat",
+				"Crab",
+				"Crocodile",
+				"DarkBat",
+				"Duck",
+				"Dragon",
+				"Dermite",
+				"Deer",
+				"Dog",
+				"Dragon",
+				"Drifter",
+				"Elephant",
+				"Electro",
+				"FlamingHorux",
+				"Fishy",
+				"FlameBeast",
+				"Flamey",
+				"FireBeater",
+				"Flamingo",
+				"Fox",
+				"Frog",
+				"GrayWolf",
+				"GrassMage",
+				"JetpackKid",
+				"Lion",
+				"Lizzard",
+				"MagicMage",
+				"Magnus",
+				"MinerBear",
+				"MinerCat",
+				"MinerDog",
+				"MinerPig",
+				"MinerRabbit",
+				"MinerTiger",
+				"Monkey",
+				"MoonBat",
+				"MoonOwl",
+				"MoonSpider",
+				"Mouse",
+				"Omnes",
+				"Orca",
+				"Owl",
+				"Parrot",
+				"Penguin",
+				"Pig",
+				"PolarBear",
+				"Quasar",
+				"Rogue",
+				"Scaler",
+				"Scorpion",
+				"Seal",
+				"Shark",
+				"Slime",
+				"Snowy",
+				"SolarDog",
+				"Spooky",
+				"Spider",
+				"Squirrel",
+				"Starski",
+				"SunBull",
+				"SunDeer",
+				"ToxicHydra",
+				"TheBeast",
+				"SunDog",
+				"SnowHorn",
+				"SunRabbit",
+				"Tetra",
+				"Tiger",
+				"IceDominus",
+				"Unicorn",
+				"Vangaurd",
+				"WaterMage",
+				"Wolf"
+			},
+			CurrentOption = "Aero",
+			MultipleOptions = false,
+			Callback = function(Option)
+				if Option ~= nil then
+					getgenv().selectdelete4 = Option[1]
+				end
+			end
+		})
+		local DropdownEgg1 = HatchingTab:CreateDropdown(
+		{
+			Name = "5rd Selection",
+			Options = {
+				"Aero",
+				"Adventrina",
+				"AngelBear",
+				"AngelCat",
+				"AngelCow",
+				"AngelElephant",
+				"ArcticFox",
+				"Astro",
+				"Astra",
+				"Axeli",
+				"Axolotl",
+				"BloodDragon",
+				"Bear",
+				"Bomba",
+				"Camel",
+				"Candy",
+				"Cow",
+				"Cat",
+				"Crab",
+				"Crocodile",
+				"DarkBat",
+				"Duck",
+				"Dragon",
+				"Dermite",
+				"Deer",
+				"Dog",
+				"Dragon",
+				"Drifter",
+				"Elephant",
+				"Electro",
+				"FlamingHorux",
+				"Fishy",
+				"FlameBeast",
+				"Flamey",
+				"FireBeater",
+				"Flamingo",
+				"Fox",
+				"Frog",
+				"GrayWolf",
+				"GrassMage",
+				"JetpackKid",
+				"Lion",
+				"Lizzard",
+				"MagicMage",
+				"Magnus",
+				"MinerBear",
+				"MinerCat",
+				"MinerDog",
+				"MinerPig",
+				"MinerRabbit",
+				"MinerTiger",
+				"Monkey",
+				"MoonBat",
+				"MoonOwl",
+				"MoonSpider",
+				"Mouse",
+				"Omnes",
+				"Orca",
+				"Owl",
+				"Parrot",
+				"Penguin",
+				"Pig",
+				"PolarBear",
+				"Quasar",
+				"Rogue",
+				"Scaler",
+				"Scorpion",
+				"Seal",
+				"Shark",
+				"Slime",
+				"Snowy",
+				"SolarDog",
+				"Spooky",
+				"Spider",
+				"Squirrel",
+				"Starski",
+				"SunBull",
+				"SunDeer",
+				"ToxicHydra",
+				"TheBeast",
+				"SunDog",
+				"SnowHorn",
+				"SunRabbit",
+				"Tetra",
+				"Tiger",
+				"IceDominus",
+				"Unicorn",
+				"Vangaurd",
+				"WaterMage",
+				"Wolf"
+			},
+			CurrentOption = "Aero",
+			MultipleOptions = false,
+			Callback = function(Option)
+				if Option ~= nil then
+					getgenv().selectdelete5 = Option[1]
+				end
+			end
+		})
+		local CraftTab = Window:CreateTab("Crafting")
+		local ToggleAutoCraft = CraftTab:CreateToggle(
+                {
+			Name = "Auto Craft",
+			CurrentValue = false,
+			Callback = function(Value)
+				getgenv().autocraft = Value
+				if Value then
+					AutoCraft()
+				end
+			end
+		})
+		local ToggleAutoCraft = CraftTab:CreateToggle(
+                {
+			Name = "Auto Instant Gold(only works on some public servers)",
+			CurrentValue = false,
+			Callback = function(Value)
+				getgenv().autoinstantgold = Value
+				if Value then
+					AutoInstantGold()
+				end
+			end
+		})
+
+		local WebhookTab = Window:CreateTab("Webhook")
+		local WebhookSection = WebhookTab:CreateSection("Webhook (Might crash (Fixing Later!))")
+
+		local ToggleAutoCraft = WebhookTab:CreateToggle(
+                {
+			Name = "Webhook Statistics",
+			CurrentValue = false,
+			Callback = function(Value)
+				getgenv().autoinstantgold = Value
+				if Value == true then
+					function getLeaderStats(player, index)
+						local leaderstats = game.Players[player]:WaitForChild("leaderstats")
+						local value = leaderstats[index].Value
+						return value
+					end
+					
+					local version = "V1.1b101"
+					local OSTime = os.time()
+					local Time = os.date("!*t", OSTime)
+					local JobID = tostring(game.JobId)
+					local PlaceID = tostring(game.PlaceId)
+					local username = tostring(game.Players.LocalPlayer.Name)
+					local updateDelay = getgenv().updatedelay
+					local teleportScript = "game:GetService('TeleportService'):TeleportToPlaceInstance(" .. PlaceID .. ", \"" .. JobID .. "\", game.Players.LocalPlayer)"
+					
+					local function sendUpdate()
+						local embed = {
+							["title"] = "Statistics Update!",
+							["type"] = "rich",
+							["color"] = tonumber(16777215),
+							["fields"] = {
+								{
+									["name"] = "Biceps",
+									["value"] = getLeaderStats(game.Players.LocalPlayer.Name, "Biceps") or ("nil"),
+									["inline"] = false
+								},
+								{
+									["name"] = "Hands",
+									["value"] = getLeaderStats(game.Players.LocalPlayer.Name, "Hands") or ("nil"),
+									["inline"] = false
+								},
+								{
+									["name"] = "Knuckles",
+									["value"] = getLeaderStats(game.Players.LocalPlayer.Name, "Knuckles") or ("nil"),
+									["inline"] = false
+								},
+								{
+									["name"] = "Wins",
+									["value"] = getLeaderStats(game.Players.LocalPlayer.Name, "Wins") or ("nil"),
+									["inline"] = false
+								},
+								{
+									["name"] = "Username",
+									["value"] = username,
+									["inline"] = false
+								},
+								{
+									["name"] = "JobID",
+									["value"] = "```" .. JobID .. "```",
+									["inline"] = false
+								},
+								{
+									["name"] = "Join script",
+									["value"] = "```" .. teleportScript .. "```",
+									["inline"] = false
+								},
+								{
+									["name"] = "Version",
+									["value"] = version,
+									["inline"] = false
+								}
+							},
+							["footer"] = {
+								["text"] = "ScriptForge ; #1",
+								["icon_url"] = "https://pbs.twimg.com/profile_images/2132520177/w2rw.jpg"
+							},
+							["thumbnail"] = {
+								["url"] = "https://www.roblox.com/avatar-thumbnail/image?userId=" .. game.Players.LocalPlayer.UserId .. "&width=600&height=600&format=png"
+							},
+							["timestamp"] = string.format("%d-%d-%dT%02d:%02d:%02dZ", Time.year, Time.month, Time.day, Time.hour, Time.min, Time.sec)
+						}
+						(syn and syn.request or http_request or http.request){
+							Url = getgenv().webhook;
+							Method = 'POST';
+							Headers = {
+								['Content-Type'] = 'application/json';
+							};
+							Body = game:GetService('HttpService'):JSONEncode({
+								username = "ScriptForge - Statistics",
+								avatar_url = 'https://pbs.twimg.com/profile_images/2132520177/w2rw.jpg',
+								embeds = {
+									embed
+								}
+							})
+						}
+					end
+					sendUpdate()
+					while Value == true do
+						wait(updateDelay)
+						sendUpdate()
+					end
+				end
+			end
+		})
+		local Input = WebhookTab:CreateInput({
+			Name = "Webhook",
+			PlaceholderText = "Url",
+			RemoveTextAfterFocusLost = false,
+			Callback = function(Text)
+				getgenv().webhook = Text
+			end,
+		})
+		local Input = WebhookTab:CreateInput({
+			Name = "Delay",
+			PlaceholderText = "Seconds",
+			RemoveTextAfterFocusLost = false,
+			Callback = function(Text)
+				getgenv().updatedelay = Text
+			end,
+		})
+		local Button = WebhookTab:CreateButton({
+			Name = "Test Webhook",
+			Callback = function()
+				local httprequest = (syn and syn.request) or (http and http.request) or http_request or (fluxus and fluxus.request) or request
+				local OSTime = os.time()
+				local Time = os.date("!*t", OSTime)
+				local function sendUpdate()
+					local embed = {
+						["title"] = "This Is A Test!",
+						["type"] = "rich",
+						["color"] = tonumber(16777215),
+						["fields"] = {
+							{
+								["name"] = "Success!",
+								["value"] = "Everything Works Properly!!",
+								["inline"] = false
+							}
+						},
+						["footer"] = {
+							["text"] = "ScriptForge ; #1",
+							["icon_url"] = "https://pbs.twimg.com/profile_images/2132520177/w2rw.jpg"
+						},
+						["thumbnail"] = {
+							["url"] = "https://www.roblox.com/avatar-thumbnail/image?userId=" .. game.Players.LocalPlayer.UserId .. "&width=600&height=600&format=png"
+						},
+						["timestamp"] = string.format("%d-%d-%dT%02d:%02d:%02dZ", Time.year, Time.month, Time.day, Time.hour, Time.min, Time.sec)
+					}
+					(syn and syn.request or http_request or http.request){
+						Url = getgenv().webhook;
+						Method = 'POST';
+						Headers = {
+							['Content-Type'] = 'application/json';
+						};
+						Body = game:GetService('HttpService'):JSONEncode({
+							username = "ScriptForge - Test", 
+							avatar_url = 'https://pbs.twimg.com/profile_images/2132520177/w2rw.jpg',
+							embeds = {
+								embed
+							} 
+						})
+					}
+				end
+				sendUpdate()
+			end,
+		})
+
+		local CreditsTab = Window:CreateTab("Credits")
+		local CreditsSection = CreditsTab:CreateSection("Credits")
+		local Label8 = CreditsTab:CreateLabel("Made By Killa // N3xKxp3r // xShadow")
+
+		while task.wait() do
+			Label3:Set(game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name .. " / " .. game.PlaceId .. " / " .. game.JobId)
+			Label4:Set("Biceps: " .. getLeaderStats(game.Players.LocalPlayer.Name, "Biceps") or ("nil"))
+			Label5:Set("Hands: " .. getLeaderStats(game.Players.LocalPlayer.Name, "Hands") or ("nil"))
+			Label6:Set("Knuckles: " .. getLeaderStats(game.Players.LocalPlayer.Name, "Knuckles") or ("nil"))
+			Label7:Set("Wins: " .. getLeaderStats(game.Players.LocalPlayer.Name, "Wins") or ("nil"))
+		end
+	end
+end)
