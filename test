@@ -87,7 +87,7 @@ do
         end
         --
         return NewInstance
-    en
+    end
     --
     Utility.Loop = function(Delay, Call)
         local Callback = typeof(Call) == "function" and Call or function() end
