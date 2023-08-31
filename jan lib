@@ -4,7 +4,7 @@ _G.Color2 = Color3.fromRGB(128, 0, 128)
 _G.FontSizeX = 15 -- Default Value 15
 _G.TitleSizeX = 20 -- Default Value 18
 _G.FontX = "SciFi" -- Default Value "Code" | You can try change to other fonts. fonts u can get here https://create.roblox.com/docs/reference/engine/enums/Font
-_G.BackgroundX = "rbxassetid://2151741365"
+_G.BackgroundX = "rbxassetid://5553946656"
 _G.TileSizeX = 4*100 -- Default Value 50
 
 local library = {
