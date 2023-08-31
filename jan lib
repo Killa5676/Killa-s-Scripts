@@ -1,6 +1,6 @@
 
-_G.Color = Color3.fromRGB(0,130,255)
-_G.Color2 = Color3.fromRGB(30,30,30)
+_G.Color = Color3.fromRGB(66, 0, 66)
+_G.Color2 = Color3.fromRGB(66, 0, 66)
 _G.FontSizeX = 15 -- Default Value 15
 _G.TitleSizeX = 20 -- Default Value 18
 _G.FontX = "GothamMedium" -- Default Value "Code" | You can try change to other fonts. fonts u can get here https://create.roblox.com/docs/reference/engine/enums/Font
