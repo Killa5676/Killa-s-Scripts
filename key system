@@ -206,7 +206,7 @@ local function MakeUi(applicationName, name, info, discordInvite)
     local text_label_2 = Instance.new("TextLabel")
     text_label_2.Font = Enum.Font.Gotham
     if info == "" then
-        text_label_2.Text = "To use the free version of "..tostring(name).." you need a key. Click 'Get Key' button to get your key!"
+        text_label_2.Text = "To use the free version of "..tostring(name).." you need a key. Click 'Copy Key' button to get your key!"
     else
         text_label_2.Text = info == nil and "To use the free version of "..tostring(name).." you need a key. Click 'Get Key' button to get your key!" or tostring(info)
     end
