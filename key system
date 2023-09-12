@@ -268,7 +268,7 @@ local function MakeUi(applicationName, name, info, discordInvite)
     
     local get_key = Instance.new("TextButton")
     get_key.Font = Enum.Font.Gotham
-    get_key.Text = "Get Key"
+    get_key.Text = "Copy Key"
     get_key.TextColor3 = Color3.new(1, 1, 1)
     get_key.TextSize = 13
     get_key.BackgroundColor3 = Color3.new(0.109804, 0.109804, 0.109804)
