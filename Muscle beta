@@ -114,10 +114,10 @@ end
 
 
 
-Tabs.Farming:AddSection("Main")
+Tabs.Main:AddSection("Main")
 
 
-local AutoPunchToggle = Tabs.Farming:AddToggle("AutoPunchToggle", {Title = "Auto Punch", Default = false })
+local AutoPunchToggle = Tabs.Main:AddToggle("AutoPunchToggle", {Title = "Auto Punch", Default = false })
 AutoPunchToggle:OnChanged(function()
     getgenv().AutoPunch = Options.AutoPunchToggle.Value
     if getgenv().AutoPunch then
@@ -126,7 +126,7 @@ AutoPunchToggle:OnChanged(function()
 end)
 
 
-local AutoTrainToggle = Tabs.Farming:AddToggle("AutoTrainToggle", {Title = "Auto Lift", Default = false })
+local AutoTrainToggle = Tabs.Main:AddToggle("AutoTrainToggle", {Title = "Auto Lift", Default = false })
 AutoTrainToggle:OnChanged(function()
     getgenv().AutoTrain = Options.AutoTrainToggle.Value
     if getgenv().AutoTrain then
@@ -134,7 +134,7 @@ AutoTrainToggle:OnChanged(function()
     end
 end)
 
-local AutoPushToggle = Tabs.Farming:AddToggle("AutoPushToggle", {Title = "Auto Push", Default = false })
+local AutoPushToggle = Tabs.Main:AddToggle("AutoPushToggle", {Title = "Auto Push", Default = false })
 AutoPushToggle:OnChanged(function()
     getgenv().AutoPush = Options.AutoPushToggle.Value
     if getgenv().AutoPush then
@@ -142,7 +142,7 @@ AutoPushToggle:OnChanged(function()
     end
 end)
 
-local AutoRebirthToggle = Tabs.Farming:AddToggle("AutoRebirthToggle", {Title = "Auto Rebirth", Default = false })
+local AutoRebirthToggle = Tabs.Main:AddToggle("AutoRebirthToggle", {Title = "Auto Rebirth", Default = false })
 AutoRebirthToggle:OnChanged(function()
     getgenv().AutoRebirth = Options.AutoRebirthToggle.Value
     if getgenv().AutoRebirth then
@@ -150,7 +150,9 @@ AutoRebirthToggle:OnChanged(function()
     end
 end)
 
-Tabs.Farming:AddSection("Main")
+
+
+
 
 local AntiAfkToggle = Tabs.Main:AddToggle("AntiAfkToggle", { Title = "Anti Afk", Default = false })
 AntiAfkToggle:OnChanged(function()
@@ -164,6 +166,5 @@ AntiAfkToggle:OnChanged(function()
         end
     end
 end)
-
 
 
