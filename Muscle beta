@@ -1,0 +1,169 @@
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+if not Fluent then
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Error",
+        Text = "Failed to load Script. Please try again.",
+        Duration = 5
+    })
+    return
+end
+
+if not SaveManager or not InterfaceManager then
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Error",
+        Text = "Failed to load additional modules. Please try again.",
+        Duration = 5
+    })
+    return
+end
+
+
+local Window = Fluent:CreateWindow({
+    Title = "Muscle Legends Beta│ " .. identifyexecutor(),
+    SubTitle = "by killa0731☑️",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = true,
+    Theme = "Darker",
+    MinimizeKey = Enum.KeyCode.LeftControl,
+})
+
+
+local Tabs = {
+	Main = Window:AddTab({ Title = "Main", Icon = "bitcoin" }),
+	Settings = Window:AddTab({ Title = "Settings", Icon = "settings" }),
+}
+
+local Options = Fluent.Options
+
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+
+SaveManager:IgnoreThemeSettings()
+
+SaveManager:SetIgnoreIndexes({})
+
+InterfaceManager:SetFolder("FluentScriptHub")
+SaveManager:SetFolder("FluentScriptHub/specific-game")
+
+InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+SaveManager:BuildConfigSection(Tabs.Settings)
+
+Window:SelectTab(1)
+
+Fluent:Notify({
+	Title = "Script",
+	Content = "Loaded Successfully ",
+	Duration = 8,
+})
+
+SaveManager:LoadAutoloadConfig()
+
+
+local function AutoPunch()
+    task.spawn(function ()
+        while task.wait() and getgenv().AutoPunch do    
+            if not game.Players.LocalPlayer.Character:FindFirstChild("Punch") then   
+                game.Players.LocalPlayer.Character:WaitForChild("Humanoid"):EquipTool(game:GetService("Players").LocalPlayer.Backpack:WaitForChild("Punch"))
+            end    
+            local args = {
+                [1] = false
+            }
+            
+            game:GetService("ReplicatedStorage"):WaitForChild("Revents"):WaitForChild("Punch"):WaitForChild("PunchEvent"):FireServer(unpack(args))  
+          
+        end
+    end)
+end
+
+
+local function AutoLift()
+    task.spawn(function ()
+        while task.wait() and getgenv().AutoTrain do
+            if not game.Players.LocalPlayer.Character:FindFirstChild("Weight") then   
+                game.Players.LocalPlayer.Character:WaitForChild("Humanoid"):EquipTool(game:GetService("Players").LocalPlayer.Backpack:WaitForChild("Weight"))
+            end    
+            local args = {
+                [1] = 1
+            }
+            
+            game:GetService("Players").LocalPlayer.Character.Weight.LiftEvent:FireServer(unpack(args))            
+          
+        end
+    end)
+end
+
+local function AutoPush()
+    task.spawn(function ()
+        while task.wait() and getgenv().AutoPush do
+            game:GetService("ReplicatedStorage"):WaitForChild("Revents"):WaitForChild("PushUps"):WaitForChild("PushEvent"):FireServer()     
+        end
+    end)
+end
+
+local function AutoRebirth()
+    task.spawn(function ()
+        while task.wait() and getgenv().AutoRebirth do
+            game:GetService("ReplicatedStorage"):WaitForChild("Revents"):WaitForChild("RebirthsEvent"):FireServer()
+        end
+    end)
+end
+
+
+
+
+Tabs.Farming:AddSection("Main")
+
+
+local AutoPunchToggle = Tabs.Farming:AddToggle("AutoPunchToggle", {Title = "Auto Punch", Default = false })
+AutoPunchToggle:OnChanged(function()
+    getgenv().AutoPunch = Options.AutoPunchToggle.Value
+    if getgenv().AutoPunch then
+        AutoPunch()
+    end
+end)
+
+
+local AutoTrainToggle = Tabs.Farming:AddToggle("AutoTrainToggle", {Title = "Auto Lift", Default = false })
+AutoTrainToggle:OnChanged(function()
+    getgenv().AutoTrain = Options.AutoTrainToggle.Value
+    if getgenv().AutoTrain then
+        AutoLift()
+    end
+end)
+
+local AutoPushToggle = Tabs.Farming:AddToggle("AutoPushToggle", {Title = "Auto Push", Default = false })
+AutoPushToggle:OnChanged(function()
+    getgenv().AutoPush = Options.AutoPushToggle.Value
+    if getgenv().AutoPush then
+        AutoPush()
+    end
+end)
+
+local AutoRebirthToggle = Tabs.Farming:AddToggle("AutoRebirthToggle", {Title = "Auto Rebirth", Default = false })
+AutoRebirthToggle:OnChanged(function()
+    getgenv().AutoRebirth = Options.AutoRebirthToggle.Value
+    if getgenv().AutoRebirth then
+        AutoRebirth()
+    end
+end)
+
+Tabs.Farming:AddSection("Main")
+
+local AntiAfkToggle = Tabs.Main:AddToggle("AntiAfkToggle", { Title = "Anti Afk", Default = false })
+AntiAfkToggle:OnChanged(function()
+    getgenv().AntiAfk = Options.AntiAfkToggle.Value
+    if getgenv().AntiAfk then
+        while getgenv().AntiAfk do
+            for i, v in pairs(getconnections(game:GetService("Players").LocalPlayer.Idled)) do
+                v:Disable()
+                task.wait()
+            end
+        end
+    end
+end)
+
+
+
