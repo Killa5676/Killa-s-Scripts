@@ -1,0 +1,542 @@
+repeat wait(30) until game:IsLoaded()
+
+getgenv().SETTINGS       = {
+    ["ENABLED"] = true,
+    ["MAIN"] = {
+        ["SHOVELSETTINGS"] = { -- NEVER SET MINLAYER TO 0, 1 IS THE FIRST LAYER
+            ["1"] = {          -- this is the very first shovel that you get for free
+                ["MINLAYER"] = 2
+            },
+            ["2"] = {
+                ["MINLAYER"] = 10
+            },
+            ["3"] = {
+                ["MINLAYER"] = 26
+            },
+            ["4"] = {
+                ["MINLAYER"] = 26
+            },
+            ["5"] = {
+                ["MINLAYER"] = 2
+            },
+            ["6"] = {
+                ["MINLAYER"] = 10
+            },
+            ["7"] = {
+                ["MINLAYER"] = 26
+            },
+            ["8"] = {
+                ["MINLAYER"] = 26
+            },
+            ["9"] = {
+                ["MINLAYER"] = 50
+            },
+        },
+        ["FARMINGSETTINGS"] = {
+            ["OPTION"] = "Normal", -- or Advanced
+            ["FARMBOTH"] = true,
+            ["AUTOBUYBESTSHOVEL"] = true,
+            ["AUTOCOLLECTORBS"] = true,
+            ["STOPATMAXSHOVEL"] = true,
+        },
+    },
+    ["MISC"] = {
+        ["WEBHOOK"] =
+        "https://discord.com/api/webhooks/1212224543335251988/fHPF0EMBka4FfrcaefTWBu-MctzFUz_BeOGAIfl94Gv3mW1EXrzj7OGfH_yKwyXOa7x3",
+        ["AntiAfk"] = true,
+        ["MAXFPS"] = 120
+    },
+}
+
+local MAXSHOVELSNORMAL   = 5
+local MAXSHOVELSADVANCED = 9
+local SENTWEBHOOK        = false
+
+local ShovelTable        = {}
+for _, Shovel in pairs(game:GetService("ReplicatedStorage").__DIRECTORY.MiscItems.Categorized.Tools:GetChildren()) do
+    if Shovel.Name == "Diamond Shovel" or Shovel.Name == "Flimsy Shovel" or Shovel.Name == "Golden Shovel" then continue end
+    if string.find(Shovel.Name, "Shovel") then table.insert(ShovelTable, Shovel.Name) end
+end
+
+
+
+ local NormalShovelTable = { "Flimsy Shovel", "Normal Shovel", "Bluesteel Shovel", "Sharp Shovel", "Pro Shovel" }
+local AdvancedShovelTable = { "Platinum Shovel", "Emerald Shovel", "Sapphire Shovel", "Amethyst Shovel" }
+    
+    
+    local function GetShovels(Type)
+        local Count = 0
+        local lib = require(game.ReplicatedStorage:WaitForChild('Library'))
+        local inventory = lib.Save.Get().Inventory
+        local Table
+        if Type == "Normal" then
+            Table = NormalShovelTable
+        else
+            Table = AdvancedShovelTable
+        end
+    
+        local x = inventory.Misc
+        for k, v in pairs(x) do
+            if type(v) == "table" then
+                if table.find(Table, v.id) then
+                    Count += 1
+                end
+            end
+        end
+        if Type == "Normal" then
+            return Count
+        else
+            return Count + MAXSHOVELSNORMAL
+        end
+    end
+
+
+local function SendWebhook()
+        local Webhook = getgenv().SETTINGS.MISC.WEBHOOK
+        if Webhook == "" then
+            print("Webhook URL is empty. Please provide a valid webhook URL.")
+            return
+        end
+
+        local data = {
+            ["embeds"] = {
+                {
+                    ["title"] = "DIG SITE FARMER",
+                    ["description"] = "Username: " .. game.Players.LocalPlayer.Name .. " has reached max shovel",
+                    ["type"] = "rich",
+                    ["color"] = tonumber(0x7269da),
+                    ["image"] = {
+                        ["url"] = "http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=" ..
+                            tostring(game:GetService("Players").LocalPlayer.Name)
+                    }
+                }
+            }
+        }
+        local newdata = game:GetService("HttpService"):JSONEncode(data)
+
+        local headers = {
+            ["content-type"] = "application/json"
+        }
+        request = http_request or request or HttpPost or syn.request
+        local abcdef = { Url = Webhook, Body = newdata, Method = "POST", Headers = headers }
+        request(abcdef)
+end
+
+local DB = true
+local HighestY = -math.huge
+local LowestY = math.huge
+local HighestBlock = nil
+local function AutoFarmAdvanced()
+    task.spawn(function()
+        while task.wait() and getgenv().SETTINGS.ENABLED and getgenv().SETTINGS.MAIN.FARMINGSETTINGS.OPTION == "Advanced" do
+            for _, Block in pairs(workspace.__THINGS.__INSTANCE_CONTAINER.Active:WaitForChild("AdvancedDigsite"):WaitForChild("Important"):WaitForChild("ActiveBlocks"):GetChildren()) do
+                local BlockCoord = Block:GetAttribute("Coord")
+                local YCoord = BlockCoord.Y
+                if YCoord and YCoord > HighestY then
+                    HighestY = YCoord
+                    HighestBlock = Block
+                end
+            end
+        end
+    end)
+    task.spawn(function()
+        while task.wait() and getgenv().SETTINGS.MAIN.FARMINGSETTINGS.OPTION == "Advanced" and getgenv().SETTINGS.ENABLED do
+            for _, Block in pairs(workspace.__THINGS.__INSTANCE_CONTAINER.Active:WaitForChild("AdvancedDigsite"):WaitForChild("Important"):WaitForChild("ActiveBlocks"):GetChildren()) do
+                local BlockCoord = Block:GetAttribute("Coord")
+                local YCoord = BlockCoord.Y
+                if YCoord and YCoord < LowestY and YCoord >= getgenv().SETTINGS.MAIN.SHOVELSETTINGS[tostring(GetShovels("Advanced"))].MINLAYER then
+                    LowestY = YCoord
+                end
+            end
+
+            local count = 0
+            for _, Block in pairs(workspace.__THINGS.__INSTANCE_CONTAINER.Active:WaitForChild("AdvancedDigsite"):WaitForChild("Important"):WaitForChild("ActiveBlocks"):GetChildren()) do
+                local BlockCoord = Block:GetAttribute("Coord")
+                local YCoord = BlockCoord.Y
+                if YCoord == LowestY then
+                    count += 1
+                end
+            end
+            if count == 0 then
+                LowestY = math.huge
+            end
+        end
+    end)
+    task.spawn(function()
+        if getgenv().SETTINGS.MAIN.FARMINGSETTINGS.OPTION == "Advanced" and getgenv().SETTINGS.ENABLED and game:GetService("Players").LocalPlayer.PlayerGui._MISC.Instancing.Enabled == false then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.__THINGS.Instances.AdvancedDigsite.Teleports
+            .Enter.CFrame
+        end
+        task.wait(65)
+        while task.wait() and true do
+            if getgenv().SETTINGS.MAIN.FARMINGSETTINGS.OPTION ~= "Advanced" or getgenv().SETTINGS.ENABLED == false then
+                break
+            end
+
+            if getgenv().SETTINGS.ENABLED == true and getgenv().SETTINGS.MAIN.FARMINGSETTINGS.FARMBOTH == true and GetShovels("Advanced") == MAXSHOVELSADVANCED and SENTWEBHOOK == false then
+                SendWebhook()
+                SENTWEBHOOK = true
+                break
+            end
+            if getgenv().SETTINGS.MAIN.SHOVELSETTINGS[tostring(GetShovels("Advanced"))].MINLAYER >= HighestY then
+                repeat
+                    if getgenv().SETTINGS.ENABLED == true and getgenv().SETTINGS.MAIN.FARMINGSETTINGS.FARMBOTH == true and GetShovels("Advanced") == MAXSHOVELSADVANCED and SENTWEBHOOK == false then
+                        SendWebhook()
+                        SENTWEBHOOK = true
+                        break
+                    end
+                        local character = game.Players.LocalPlayer.Character
+                        if character and character:WaitForChild("HumanoidRootPart") then
+                            if HighestBlock then
+                            character.HumanoidRootPart.CFrame = HighestBlock.CFrame + Vector3.new(0, 10, 0)
+                            end
+                        end
+                 
+                    local args = {
+                        [1] = "AdvancedDigsite",
+                        [2] = "DigBlock",
+                        [3] = HighestBlock:GetAttribute("Coord")
+                    }
+
+                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild(
+                        "Instancing_FireCustomFromClient"):FireServer(unpack(args))
+                    task.wait()
+                until not getgenv().SETTINGS.ENABLED or getgenv().SETTINGS.MAIN.FARMINGSETTINGS.OPTION ~= "Advanced" or HighestY >= getgenv().SETTINGS.MAIN.SHOVELSETTINGS[tostring(GetShovels("Advanced"))].MINLAYER
+            end
+            for _, Block in pairs(workspace.__THINGS.__INSTANCE_CONTAINER.Active:WaitForChild("AdvancedDigsite"):WaitForChild("Important"):WaitForChild("ActiveBlocks"):GetChildren()) do
+                local BlockCoord = Block:GetAttribute("Coord")
+                if BlockCoord.Y == LowestY then
+                    if not getgenv().SETTINGS.ENABLED or getgenv().SETTINGS.MAIN.FARMINGSETTINGS.OPTION ~= "Advanced" then
+                        break
+                    end
+                    if getgenv().SETTINGS.ENABLED == true and getgenv().SETTINGS.MAIN.FARMINGSETTINGS.FARMBOTH == true and GetShovels("Advanced") == MAXSHOVELSADVANCED and SENTWEBHOOK == false then
+                        SendWebhook()
+                        SENTWEBHOOK = true
+                        break
+                    end
+                    repeat
+                        if getgenv().SETTINGS.ENABLED == true and getgenv().SETTINGS.MAIN.FARMINGSETTINGS.FARMBOTH == true and GetShovels("Advanced") == MAXSHOVELSADVANCED and SENTWEBHOOK == false then
+                            SendWebhook()
+                            SENTWEBHOOK = true
+                            break
+                        end
+                        local character = game.Players.LocalPlayer.Character
+                        if character and character:WaitForChild("HumanoidRootPart") then
+                            character.HumanoidRootPart.CFrame = Block.CFrame + Vector3.new(0, 5, 0)
+                        end
+                        local args = {
+                            [1] = "AdvancedDigsite",
+                            [2] = "DigBlock",
+                            [3] = Block:GetAttribute("Coord")
+                        }
+
+
+                        game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild(
+                            "Instancing_FireCustomFromClient"):FireServer(unpack(args))
+                        task.wait()
+                    until Block.Parent == nil or not getgenv().SETTINGS.ENABLED or getgenv().SETTINGS.MAIN.FARMINGSETTINGS.OPTION ~= "Advanced"
+                end
+            end
+        end
+    end)
+end
+
+
+
+local DB = true
+local HighestY = -math.huge
+local LowestY = math.huge
+local HighestBlock = nil
+local function AutoFarmNormal()
+    task.spawn(function()
+        while task.wait() and getgenv().SETTINGS.MAIN.FARMINGSETTINGS.OPTION == "Normal" and getgenv().SETTINGS.ENABLED  do
+            for _, Block in pairs(workspace.__THINGS.__INSTANCE_CONTAINER.Active:WaitForChild("Digsite"):WaitForChild("Important"):WaitForChild("ActiveBlocks"):GetChildren()) do
+                local BlockCoord = Block:GetAttribute("Coord")
+                local YCoord = BlockCoord.Y
+                if YCoord and YCoord > HighestY then
+                    HighestY = YCoord
+                    HighestBlock = Block
+                end
+            end
+        end
+    end)
+    task.spawn(function()
+        while task.wait() and getgenv().SETTINGS.MAIN.FARMINGSETTINGS.OPTION == "Normal" and getgenv().SETTINGS.ENABLED do
+            if GetShovels("Normal") ~= 0 then
+            for _, Block in pairs(workspace.__THINGS.__INSTANCE_CONTAINER.Active:WaitForChild("Digsite"):WaitForChild("Important"):WaitForChild("ActiveBlocks"):GetChildren()) do
+                local BlockCoord = Block:GetAttribute("Coord")
+                local YCoord = BlockCoord.Y
+                if YCoord and YCoord < LowestY and YCoord >= getgenv().SETTINGS.MAIN.SHOVELSETTINGS[tostring(GetShovels("Normal"))].MINLAYER then
+                    LowestY = YCoord
+                end
+            end
+        
+
+            local count = 0
+            for _, Block in pairs(workspace.__THINGS.__INSTANCE_CONTAINER.Active:WaitForChild("Digsite"):WaitForChild("Important"):WaitForChild("ActiveBlocks"):GetChildren()) do
+                local BlockCoord = Block:GetAttribute("Coord")
+                local YCoord = BlockCoord.Y
+                if YCoord == LowestY then
+                    count += 1
+                end
+            end
+            if count == 0 then
+                LowestY = math.huge
+            end
+        end
+        end
+    end)
+    task.spawn(function()
+        if getgenv().SETTINGS.MAIN.FARMINGSETTINGS.OPTION == "Normal" and getgenv().SETTINGS.ENABLED and game:GetService("Players").LocalPlayer.PlayerGui._MISC.Instancing.Enabled == false then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.__THINGS.Instances.Digsite.Teleports
+            .Enter.CFrame
+        end
+
+        task.wait(65)
+
+        if getgenv().SETTINGS.ENABLED == true and getgenv().SETTINGS.MAIN.FARMINGSETTINGS.OPTION == "Normal" then
+            if workspace.__THINGS.__INSTANCE_CONTAINER.Active:WaitForChild("Digsite").Important:FindFirstChild("Shovel") then
+                local character = game.Players.LocalPlayer.Character
+                if character and character:WaitForChild("HumanoidRootPart") then
+                    character.HumanoidRootPart.CFrame = workspace.__THINGS.__INSTANCE_CONTAINER.Active:WaitForChild("Digsite").Important
+                        :FindFirstChild("Shovel").CFrame
+                end
+                task.wait(3)
+                local input = loadstring(game:HttpGet('https://pastebin.com/raw/dYzQv3d8'))()
+                input.press(Enum.KeyCode.E)
+            end
+        end
+        task.wait(3)
+        while task.wait() and true do
+            if getgenv().SETTINGS.MAIN.FARMINGSETTINGS.OPTION ~= "Normal" or getgenv().SETTINGS.ENABLED == false then
+                break
+            end
+
+
+            if getgenv().SETTINGS.ENABLED == true and getgenv().SETTINGS.MAIN.FARMINGSETTINGS.FARMBOTH == true and GetShovels("Normal") == MAXSHOVELSNORMAL and DB then
+                DB = false
+                task.wait(5)
+                game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = workspace.__THINGS
+                    .Instances.Digsite.Teleports.Leave.CFrame
+                task.wait(5)
+                getgenv().SETTINGS.MAIN.FARMINGSETTINGS.OPTION = "Advanced"
+                AutoFarmAdvanced()
+                DB = true
+                break
+            end
+            if getgenv().SETTINGS.MAIN.SHOVELSETTINGS[tostring(GetShovels("Normal"))].MINLAYER >= HighestY then
+                repeat
+                    if getgenv().SETTINGS.ENABLED == true and getgenv().SETTINGS.MAIN.FARMINGSETTINGS.FARMBOTH == true and GetShovels("Normal") == MAXSHOVELSNORMAL and DB then
+                        DB = false
+                        task.wait(5)
+                        game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = workspace.__THINGS
+                            .Instances.Digsite.Teleports.Leave.CFrame
+                        task.wait(5)
+                        getgenv().SETTINGS.MAIN.FARMINGSETTINGS.OPTION = "Advanced"
+                        AutoFarmAdvanced()
+                        DB = true
+                        break
+                    end
+                        local character = game.Players.LocalPlayer.Character
+                        if character and character:WaitForChild("HumanoidRootPart") then
+                            if HighestBlock then
+                            character.HumanoidRootPart.CFrame = HighestBlock.CFrame + Vector3.new(0, 10, 0)
+                            end
+                        end
+                 
+                    local args = {
+                        [1] = "Digsite",
+                        [2] = "DigBlock",
+                        [3] = HighestBlock:GetAttribute("Coord")
+                    }
+
+                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild(
+                        "Instancing_FireCustomFromClient"):FireServer(unpack(args))
+                    task.wait()
+                until not getgenv().SETTINGS.ENABLED or getgenv().SETTINGS.MAIN.FARMINGSETTINGS.OPTION ~= "Normal" or HighestY >= getgenv().SETTINGS.MAIN.SHOVELSETTINGS[tostring(GetShovels("Normal"))].MINLAYER
+            end
+            for _, Block in pairs(workspace.__THINGS.__INSTANCE_CONTAINER.Active:WaitForChild("Digsite"):WaitForChild("Important"):WaitForChild("ActiveBlocks"):GetChildren()) do
+                local BlockCoord = Block:GetAttribute("Coord")
+                if BlockCoord.Y == LowestY then
+                    if not getgenv().SETTINGS.ENABLED or getgenv().SETTINGS.MAIN.FARMINGSETTINGS.OPTION ~= "Normal" then
+                        break
+                    end
+
+                    if getgenv().SETTINGS.ENABLED == true and getgenv().SETTINGS.MAIN.FARMINGSETTINGS.FARMBOTH == true and GetShovels("Normal") == MAXSHOVELSNORMAL and DB then
+                        DB = false
+                        task.wait(5)
+                        game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = workspace.__THINGS
+                            .Instances.Digsite.Teleports.Leave.CFrame
+                        task.wait(5)
+                        getgenv().SETTINGS.MAIN.FARMINGSETTINGS.OPTION = "Advanced"
+                        AutoFarmAdvanced()
+                        DB = true
+                        break
+                    end
+
+                    repeat
+                        if getgenv().SETTINGS.ENABLED == true and getgenv().SETTINGS.MAIN.FARMINGSETTINGS.FARMBOTH == true and GetShovels("Normal") == MAXSHOVELSNORMAL and DB then
+                            DB = false
+                            task.wait(5)
+                            game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = workspace
+                                .__THINGS
+                                .Instances.Digsite.Teleports.Leave.CFrame
+                            task.wait(5)
+                            getgenv().SETTINGS.MAIN.FARMINGSETTINGS.OPTION = "Advanced"
+                            AutoFarmAdvanced()
+                            DB = true
+                            break
+                        end
+                        local character = game.Players.LocalPlayer.Character
+                        if character and character:WaitForChild("HumanoidRootPart") then
+                            character.HumanoidRootPart.CFrame = Block.CFrame + Vector3.new(0, 5, 0)
+                        end
+                        local args = {
+                            [1] = "Digsite",
+                            [2] = "DigBlock",
+                            [3] = Block:GetAttribute("Coord")
+                        }
+
+
+                        game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild(
+                            "Instancing_FireCustomFromClient"):FireServer(unpack(args))
+                        task.wait()
+                    until Block.Parent == nil or not getgenv().SETTINGS.ENABLED or getgenv().SETTINGS.MAIN.FARMINGSETTINGS.OPTION ~= "Normal"
+                end
+            end
+        end
+    end)
+end
+
+
+
+local function AutoCollectOrbs()
+        while task.wait() and getgenv().SETTINGS.ENABLED == true and getgenv().SETTINGS.MAIN.FARMINGSETTINGS.AUTOCOLLECTORBS == true do
+            local HRP = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+            local TP = HRP.CFrame
+            for _, Orb in pairs(workspace.__THINGS.Orbs:GetChildren()) do
+                if getgenv().SETTINGS.ENABLED == false or getgenv().SETTINGS.MAIN.FARMINGSETTINGS.AUTOCOLLECTORBS == false then
+                    break
+                end
+                local tweeninfo = TweenInfo.new(
+                    0, 
+                    Enum.EasingStyle.Linear, 
+                    Enum.EasingDirection.Out, 
+                    0,
+                    false, 
+                    0 
+                )
+                
+                local tween = game:GetService("TweenService"):Create(Orb, tweeninfo, {CFrame = TP})
+                tween:Play()            
+            end
+            for _, Orb in pairs(workspace.__THINGS.Lootbags:GetChildren()) do
+                if getgenv().SETTINGS.ENABLED == false or getgenv().SETTINGS.MAIN.FARMINGSETTINGS.AUTOCOLLECTORBS == false then
+                    break
+                end
+                local tweeninfo = TweenInfo.new(
+                    0, 
+                    Enum.EasingStyle.Linear, 
+                    Enum.EasingDirection.Out, 
+                    0,
+                    false, 
+                    0 
+                )
+                
+                local tween = game:GetService("TweenService"):Create(Orb, tweeninfo, {CFrame = TP})
+                tween:Play()            
+            end
+        end
+end
+
+local function AutoBuyBestShovel()
+        while task.wait(15) and getgenv().SETTINGS.MAIN.FARMINGSETTINGS.AUTOBUYBESTSHOVEL == true and getgenv().SETTINGS.ENABLED == true do
+            for _, Shovel in pairs(ShovelTable) do
+                local args = {
+                    [1] = Shovel
+                }
+
+                game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild(
+                "DigsiteMerchant_PurchaseShovel"):InvokeServer(unpack(args))
+            end
+        end
+end
+
+
+local function AntiAfk()
+        while getgenv().SETTINGS.ENABLED and getgenv().SETTINGS.MISC.AntiAfk and task.wait() do
+            for i, v in pairs(getconnections(game:GetService("Players").LocalPlayer.Idled)) do
+                v:Disable()
+                task.wait()
+         end
+     end
+end
+
+local function FPS()
+    while getgenv().SETTINGS.ENABLED and getgenv().SETTINGS.MISC.MAXFPS and task.wait() do
+        setfpscap(getgenv().SETTINGS.MISC.MAXFPS)
+    end
+end
+
+task.spawn(AntiAfk)
+task.spawn(FPS)
+task.spawn(AutoFarmNormal)
+task.spawn(AutoFarmAdvanced)
+task.spawn(AutoBuyBestShovel)
+task.spawn(AutoCollectOrbs)
+
+wait(5)
+
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService") 
+local WindowFocusReleasedFunction = function()
+    RunService:Set3dRenderingEnabled(false)
+    return
+end 
+local WindowFocusedFunction = function()
+    RunService:Set3dRenderingEnabled(false)
+    return
+end 
+local Initialize = function()
+    UserInputService.WindowFocusReleased:Connect(WindowFocusReleasedFunction)
+    UserInputService.WindowFocused:Connect(WindowFocusedFunction)
+    return
+end
+Initialize()
+local decalsyeeted = true 
+local g = game
+local w = g.Workspace
+local l = g.Lighting
+local t = w.Terrain
+--t.WaterWaveSize = 0
+--t.WaterWaveSpeed = 0
+--t.WaterReflectance = 0
+--t.WaterTransparency = 0
+l.GlobalShadows = false
+l.FogEnd = 9e9
+l.Brightness = 0
+settings().Rendering.QualityLevel = "Level01"
+for i, v in pairs(g:GetDescendants()) do
+    if v:IsA("Part") or v:IsA("Union") or v:IsA("CornerWedgePart") or v:IsA("TrussPart") then
+        v.Material = "Plastic"
+        v.Reflectance = 0
+    elseif v:IsA("Decal") or v:IsA("Texture") and decalsyeeted then
+        v.Transparency = 1
+    elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
+       v.Lifetime = NumberRange.new(0)
+    elseif v:IsA("Explosion") then
+        v.BlastPressure = 1
+        v.BlastRadius = 1
+    elseif v:IsA("Fire") or v:IsA("SpotLight") or v:IsA("Smoke") or v:IsA("Sparkles") then
+        v.Enabled = false
+    elseif v:IsA("MeshPart") then
+        v.Material = "Plastic"
+        v.Reflectance = 0
+        v.TextureID = 10385902758728957
+    end
+end
+for i, e in pairs(l:GetChildren()) do
+    if e:IsA("BlurEffect") or e:IsA("SunRaysEffect") or e:IsA("ColorCorrectionEffect") or e:IsA("BloomEffect") or e:IsA("DepthOfFieldEffect") then
+        e.Enabled = false
+    end
+end
