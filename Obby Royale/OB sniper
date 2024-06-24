@@ -55,7 +55,7 @@ UsernameBox.Size = UDim2.new(0, 150, 0, 35)
 UsernameBox.Font = Enum.Font.SourceSansLight
 UsernameBox.PlaceholderColor3 = Color3.fromRGB(255, 255, 255)
 UsernameBox.PlaceholderText = "Enter Username Here"
-UsernameBox.Text = "brxkenvzt"
+UsernameBox.Text = "CyanLavender"
 UsernameBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 UsernameBox.TextSize = 18.000
 
