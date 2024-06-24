@@ -1,0 +1,100 @@
+
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+local Player = Players.LocalPlayer
+_G.Enabled = true
+local someoneStatusVisible
+
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+local VirtualUser = game:GetService("VirtualUser")
+Player.Idled:Connect(function()
+	VirtualUser:CaptureController()
+	VirtualUser:ClickButton2(Vector2.new())
+end)
+
+
+local function firetouch(toTouch, TouchWith, on)
+	if on == 0 then
+		return
+	end
+	if toTouch.ClassName == "TouchTransmitter" then
+		local function get()
+			local classes = { "BasePart", "Part", "MeshPart" }
+			for _, v in pairs(classes) do
+				if toTouch:FindFirstAncestorOfClass(v) then
+					return toTouch:FindFirstAncestorOfClass(v)
+				end
+			end
+		end
+		toTouch = get()
+	end
+	local cf = toTouch.CFrame
+	local anc = toTouch.CanCollide
+	toTouch.CanCollide = false
+	toTouch.CFrame = TouchWith.CFrame
+	task.wait()
+	toTouch.CFrame = cf
+	toTouch.CanCollide = anc
+end
+
+local function GetCurrentStage()
+	local Stages = Workspace.Arena.Stages
+	for _, v in pairs(Stages:GetChildren()) do
+		if v:IsA("Model") then
+			for _, v2 in pairs(v:GetChildren()) do
+				if v2:IsA("Model") and v2:GetAttribute("ID") then
+					return v2:GetAttribute("ID")
+				end
+			end
+		end
+	end
+end
+
+--[[
+task.spawn(function ()
+    while _G.Enabled and task.wait() do
+        Player.Character.HumanoidRootPart.CFrame = _Workspace.SpawnLocation.CFrame + Vector3.new(0, 2.9, 0)
+    end
+end)
+--]]
+
+task.spawn(function ()
+
+while _G.Enabled do
+    repeat
+        task.wait()
+    until Player.PlayerGui.MainUI.RoundUI.PlayerCards:FindFirstChild(Player.Name) or not _G.Enabled
+    repeat
+        task.wait()
+    until Player.PlayerGui.MainUI.RoundUI.PlayerCards:FindFirstChild(Player.Name)
+            and not Player.PlayerGui.MainUI.RoundUI.PlayerCards[Player.Name].PlayerIcon.Status.Visible
+        or not _G.Enabled
+    repeat task.wait() until Player.Character ~= nil and Player.Character:FindFirstChild("HumanoidRootPart")
+    task.wait(5)
+    local CurrentStage = GetCurrentStage()
+    local StartTime = tonumber(Player.PlayerGui.MainUI.RoundStatus.Title.Text)
+    local playerCards = Player.PlayerGui.MainUI.RoundUI.PlayerCards:GetChildren()
+    someoneStatusVisible = false
+    repeat
+        task.wait()
+        for _, card in ipairs(playerCards) do
+            if card:FindFirstChild("PlayerIcon")and (card.PlayerIcon.Status.Visible and card.PlayerIcon.Status.ImageLabel.Image == "rbxassetid://2424181375") then
+                someoneStatusVisible = true
+                print("someone completed")
+                break
+            end
+        end
+    until someoneStatusVisible or tonumber(Player.PlayerGui.MainUI.RoundStatus.Title.Text) <= (StartTime / 2) or not _G.Enabled
+    if someoneStatusVisible or tonumber(Player.PlayerGui.MainUI.RoundStatus.Title.Text) <= StartTime / 2 then
+        print("fired")
+        firetouch(Workspace.Middle.TouchParts:GetChildren()[1], Player.Character.HumanoidRootPart, 1)
+    end
+    someoneStatusVisible = false
+    repeat
+        task.wait()
+    until GetCurrentStage() ~= CurrentStage
+end
+end)
+
+print("started")
