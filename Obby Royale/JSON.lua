@@ -416,3 +416,5 @@ do -- Overwriting JSON
 		return json
 	end)()
 end
+
+return json
