@@ -1370,7 +1370,6 @@ do
 			if input.KeyCode == Enum.KeyCode.E then
 				Replay:Freeze(not Replay.Frozen)
 			elseif input.KeyCode == Enum.KeyCode.T  then
-				print(Replay.Reading)
 				
 				if not Replay.Reading then
 					Replay:Freeze(true)
@@ -1459,8 +1458,6 @@ do
 				return
 			end
 			
-			print(Replay.SeekDirection)
-
 			local NewFreezeFrame = Replay.FreezeFrame + Replay.SeekDirection
 			
 			if NewFreezeFrame < 1 then
