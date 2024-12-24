@@ -1336,6 +1336,11 @@ do
 			if gameProcessed then
 				gameProcessed = false
 			end
+			
+
+			if input.KeyCode == Enum.KeyCode.LeftShift and not Replay.Reading and not gameProcessed then
+				Input:SetShiftLockEnabled(not Input.ShiftLockEnabled)
+			end
 
 			if not Replay.Enabled then 
 				return
@@ -1352,11 +1357,6 @@ do
 					table.insert(self.InputBeganQueue, inputName)
 				end
 			end
-
-			if input.KeyCode == Enum.KeyCode.LeftShift and not Replay.Reading and not gameProcessed then
-				Input:SetShiftLockEnabled(not Input.ShiftLockEnabled)
-			end
-
 
 			if input.KeyCode == Enum.KeyCode.E then
 				Replay:Freeze(not Replay.Frozen)
