@@ -67,7 +67,7 @@ local Input = {
 }
 
 local Replay = {
-	Enabled = true,
+	Enabled = false,
 	File = "FirstTAS",
 	FileStart = "{\"Replay\":",
 	FileEnd = "}",
