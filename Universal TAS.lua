@@ -879,6 +879,15 @@ do
 		return decoded.Replay
 	end
 	
+	function Replay:NewFile(fileName)
+		self.File = fileName
+		self.RecordingTable = {}
+		self.ReplayTable = {}
+		self.ReplayTableIndex = 0
+		self.FreezeFrame = 1
+		self.SeekDirection = 0
+		self.SeekDirectionMultiplier = 1
+	end
 	
 	function Replay:GetReplayFile()
 		if not isfolder("Universal TAS") then 
@@ -1396,14 +1405,6 @@ do
 				Replay:StopReading()
 			elseif input.KeyCode == Enum.KeyCode.P then 
 				Replay:SaveToFile()	
-			elseif input.KeyCode == Enum.KeyCode.I then 
-				Replay.File = game:GetService("HttpService"):GenerateGUID(false)
-				Replay.RecordingTable = {}
-				Replay.ReplayTable = {}
-				Replay.ReplayTableIndex = 0
-				Replay.FreezeFrame = 1
-				Replay.SeekDirection = 0
-				Replay.SeekDirectionMultiplier = 1
 			end
 		end)
 
