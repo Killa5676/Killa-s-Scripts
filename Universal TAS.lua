@@ -1090,8 +1090,8 @@ do
 
 					local CurrentState = Util:GetHumanoid():GetState().Value
 
-					Camera:SetCFrame(currentCameraCFrame)
-					Camera:SetZoom(zoom)
+					--Camera:SetCFrame(currentCameraCFrame)
+					--Camera:SetZoom(zoom)
 
 					Util:GetHumanoid():ChangeState(humanoidState)
 
@@ -1112,18 +1112,20 @@ do
 					pcall(function()
 						Animate:SetAnimationSpeed(animationSpeed)
 					end)
-
+--[[
 					if shiftLockEnabled then
 						Input:SetShiftLockEnabled(true)
 					else
 						Input:SetShiftLockEnabled(false)
 					end
-
+					--]]
+--[[
 					if not shiftLockEnabled and zoom > 0.52 then
 						mousemoveabs(mouseLocation.X, mouseLocation.Y)
 					else
 						mousemoveabs((Input.Resolution.X / 2) + Input.CursorOffset.X - GuiInset.X, (Input.Resolution.Y / 2) + Input.CursorOffset.Y - GuiInset.Y - 36)
 					end
+					--]]
 
 					Util:GetCharacter().HumanoidRootPart.CFrame = rootPartCFrame
 
