@@ -953,7 +953,7 @@ do
 		end
 	end
 
-	function Replay:StartReading(dly)
+	function Replay:StartReading(file, dly)
 		if self.Reading then 
 			return
 		end
@@ -961,9 +961,10 @@ do
 		dly = dly or 3
 
 		task.wait(dly)
-
+		
 		self:SaveToFile()
-		self.ReplayTable = self:Decode(self:GetReplayFile())
+				
+		self.ReplayTable = file or self:Decode(self:GetReplayFile())
 		if not self.ReplayTable then 
 			self.ReplayTable = {}
 		end
