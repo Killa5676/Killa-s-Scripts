@@ -1426,7 +1426,7 @@ do
 
 		CurrentCamera.Changed:Connect(function()
 			if Replay.Reading then
-				CurrentCamera.CFrame = Camera.CameraCFrame
+			--	CurrentCamera.CFrame = Camera.CameraCFrame
 			end
 		end)
 
