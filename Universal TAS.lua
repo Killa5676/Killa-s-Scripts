@@ -1073,8 +1073,8 @@ do
 					--local shiftLockEnabled = (frame[10] == 1 and true) or false
 					--local mouseLocation = Util:TableToVector2(frame[11])
 					local CurrentState = Util:GetHumanoid():GetState().Value
-					Camera:SetCFrame(currentCameraCFrame)
-					Camera:SetZoom(zoom)
+					--Camera:SetCFrame(currentCameraCFrame)
+					--Camera:SetZoom(zoom)
 					Util:GetHumanoid():ChangeState(humanoidState)
 					Animate.Pose = animatePose
 					for _, args in animations do
