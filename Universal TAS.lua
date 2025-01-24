@@ -794,11 +794,11 @@ do
 	end
 
 	function Input:BlockInputs()
-		self.BlockGui.Enabled = true
+		self.Controls:Disable()
 	end
 
 	function Input:UnblockInputs()
-		self.BlockGui.Enabled = false
+		self.Controls:Enable()
 	end
 
 	function Input:SetCursor(name)
@@ -1031,23 +1031,18 @@ do
 			while true do 
 				if self.Reading then 
 					local frame = self.ReplayTable[self.ReplayTableIndex]
-
 					if frame == 0 then 
 						Util:GetHumanoid():ChangeState(15)
-
 						for _, obj in Util:GetCharacter():GetDescendants() do 
 							if obj:IsA("BasePart") then 
 								obj:Destroy()
 							end
 						end
-
 						repeat 
 							task.wait()
 						until not Connections.Dead
-
 						RunService.Heartbeat:Wait()
 						self.ReplayTableIndex += 1
-
 						continue
 					elseif frame == 1 then 
 						Util:GetHumanoid():ChangeState(15)
@@ -1055,48 +1050,33 @@ do
 
 						continue
 					end
-
 					if not frame then 
 						Replay:StopReading()
-
 						continue
 					end
-
 					Animate.Disabled = true
-
 					workspace.Gravity = 0
 					Util:GetHumanoid().WalkSpeed = 0
 					Util:GetHumanoid().JumpPower = 0
-
 					if not Util:GetCharacter():FindFirstChild("HumanoidRootPart") then 
 						RunService.Heartbeat:Wait()
 
 						continue
 					end
-
 					local rootPartCFrame = Util:TableToCFrame(frame[1])
 					local animations = frame[2]
 					local animationSpeed = frame[3]
 					local humanoidState = frame[4]
-					local rootPartVelocity = Util:TableToVector3(frame[5])
-					local rootPartRotVelocity = Util:TableToVector3(frame[6])
 					local currentCameraCFrame = Util:TableToCFrame(frame[7]) 
 					local zoom = frame[8]
 					local animatePose = frame[9]
-					local shiftLockEnabled = (frame[10] == 1 and true) or false
-					local mouseLocation = Util:TableToVector2(frame[11])
-					local inputBeganQueue = frame[12][1]
-					local inputEndedQueue = frame[12][2]
-
+					--local shiftLockEnabled = (frame[10] == 1 and true) or false
+					--local mouseLocation = Util:TableToVector2(frame[11])
 					local CurrentState = Util:GetHumanoid():GetState().Value
-
 					Camera:SetCFrame(currentCameraCFrame)
 					Camera:SetZoom(zoom)
-
 					Util:GetHumanoid():ChangeState(humanoidState)
-
 					Animate.Pose = animatePose
-
 					for _, args in animations do
 						local animation = args[1]
 						local transitionTime = args[2]
@@ -1108,28 +1088,26 @@ do
 							Animate:PlayAnimation(animation, transitionTime, true)
 						end
 					end
-
 					pcall(function()
 						Animate:SetAnimationSpeed(animationSpeed)
 					end)
-
+					--[[
 					if shiftLockEnabled then
 						Input:SetShiftLockEnabled(true)
 					else
 						Input:SetShiftLockEnabled(false)
-					end
-
+					end	
+					--]]
+					--[[
 					if not shiftLockEnabled and zoom > 0.52 then
 						mousemoveabs(mouseLocation.X, mouseLocation.Y)
 					else
 						mousemoveabs((Input.Resolution.X / 2) + Input.CursorOffset.X - GuiInset.X, (Input.Resolution.Y / 2) + Input.CursorOffset.Y - GuiInset.Y - 36)
 					end
-
+					--]]
 					Util:GetCharacter().HumanoidRootPart.CFrame = rootPartCFrame
-
 					self.ReplayTableIndex += 1
 				end
-
 				RunService.Heartbeat:Wait()
 			end
 		end)
@@ -1145,14 +1123,11 @@ do
 							end
 						end
 					end
-
 					if not Util:GetCharacter():FindFirstChild("HumanoidRootPart") then
 						RunService.Stepped:Wait()
 						continue
 					end
-
 					local frame = self.ReplayTable[self.ReplayTableIndex]
-
 					if frame and type(frame) == "table" then
 						local humanoidRootPartCFrame = Util:TableToCFrame(frame[1])
 						local currentCameraCFrame = Util:TableToCFrame(frame[7])
@@ -1163,7 +1138,6 @@ do
 				else
 					workspace.Gravity = DefaultGravity
 				end
-
 				RunService.Stepped:Wait()
 			end
 		end)
@@ -1178,7 +1152,6 @@ do
 						RunService.RenderStepped:Wait()
 						continue
 					end
-
 					if (Util:GetHumanoid().Health == 0) then
 						if type(self.RecordingTable[#self.RecordingTable]) == "table" then
 							table.insert(self.RecordingTable, 1)
@@ -1186,9 +1159,7 @@ do
 						RunService.RenderStepped:Wait()
 						continue
 					end
-
 					local frame = {}
-
 					frame[1] = Util:RoundTable(Util:CFrameToTable(Util:GetCharacter().HumanoidRootPart.CFrame), 3)
 					frame[2] = Animate.AnimationQueue
 					frame[3] = Util:RoundNumber(Animate.CurrentAnimationSpeed, 3)
@@ -1203,14 +1174,11 @@ do
 					frame[12] = {Connections.InputBeganQueue, Connections.InputEndedQueue}
 					table.insert(self.RecordingTable, frame)
 				end
-
 				Animate.AnimationQueue = {}
 				Connections.HumanoidStateQueue = {}
-
 				if setfpscap then
 					setfpscap(60)
 				end
-
 				RunService.RenderStepped:Wait()
 			end
 		end)
@@ -1219,16 +1187,12 @@ do
 			while true do
 				if self.Frozen then
 					Util:GetCharacter().HumanoidRootPart.Anchored = true
-
 					if self.FreezeFrame > 0 and self.FreezeFrame <= #self.ReplayTable then
 						local RoundedFreezeFrame = Util:RoundNumber(self.FreezeFrame, 0)
 						local Frame = self.ReplayTable[RoundedFreezeFrame]
-
 						if type(Frame) == "table" then
-
 							local AnimatePose
 							local Animation
-
 							for i = RoundedFreezeFrame,1,-1 do
 								if AnimatePose and Animation then
 									break
@@ -1239,7 +1203,6 @@ do
 									Animation = Frame[2][#Frame[2]]
 								end
 							end
-
 							local CurrentPressedKeys = {}
 							for Index = RoundedFreezeFrame-math.max(500,0),RoundedFreezeFrame do
 								local Frame = self.ReplayTable[Index]
@@ -1257,7 +1220,6 @@ do
 									end
 								end
 							end
-
 							local HumanoidRootPartCFrame = Util:TableToCFrame(Frame[1])
 							local AnimationSpeed = Frame[3]
 							local HumanoidState = Frame[4]
@@ -1267,9 +1229,7 @@ do
 							local Zoom = Frame[8]
 							local ShiftLockEnabled = (Frame[10] == 1 and true) or false
 							local MouseLocation = Util:TableToVector2(Frame[11])
-
 							local CurrentState = Util:GetHumanoid():GetState().Value
-
 							if Animation then
 								if Animation[1] == "walk" then
 									if Util:GetHumanoid().FloorMaterial ~= Enum.Material.Air and CurrentState ~= 3 then
@@ -1279,25 +1239,19 @@ do
 									Animate:PlayAnimation(Animation[1],Animation[2],true)
 								end
 							end
-
 							pcall(function()
 								Animate:SetAnimationSpeed(AnimationSpeed)
 							end)
-
 							Animate.Pose = AnimatePose
-
 							Util:GetHumanoid():ChangeState(HumanoidState)
-
 							Util:GetCharacter().HumanoidRootPart.Velocity = HumanoidRootPartVelocity
 							Util:GetCharacter().HumanoidRootPart.RotVelocity = HumanoidRootPartRotVelocity
 							Util:GetCharacter().HumanoidRootPart.CFrame = HumanoidRootPartCFrame
-
 							CurrentCamera.CFrame = CameraCFrame
 							Camera:SetZoom(Zoom)
 							if ShiftLockEnabled ~= Input:GetShiftLockEnabled() then
 								Input:SetShiftLockEnabled(ShiftLockEnabled)
 							end
-
 							mousemoveabs(MouseLocation.X,MouseLocation.Y)
 						else
 							RunService.RenderStepped:Wait()
