@@ -745,7 +745,7 @@ do
 
 	function Camera:SetCFrame(cframe)
 		self.CameraCFrame = cframe
-		CurrentCamera.CFrame = cframe
+	--	CurrentCamera.CFrame = cframe
 	end
 
 	function Camera:Init()
@@ -1164,7 +1164,7 @@ do
 					frame[4] = Util:GetHumanoid():GetState().Value
 					frame[5] = Util:RoundTable(Util:Vector3ToTable(Util:GetCharacter().HumanoidRootPart.Velocity), 3)
 					frame[6] = Util:RoundTable(Util:Vector3ToTable(Util:GetCharacter().HumanoidRootPart.RotVelocity), 3)
-					frame[7] = Util:RoundTable(Util:CFrameToTable(workspace.CurrentCamera.CFrame), 3)
+					frame[7] = Util:RoundTable(Util:CFrameToTable(CurrentCamera.CFrame), 3)
 					frame[8] = Util:RoundNumber(Camera:GetZoom(), 3)
 					frame[9] = Animate.Pose
 					frame[10] = (Input:GetShiftLockEnabled() and 1) or 0
@@ -1245,6 +1245,7 @@ do
 							Util:GetCharacter().HumanoidRootPart.Velocity = HumanoidRootPartVelocity
 							Util:GetCharacter().HumanoidRootPart.RotVelocity = HumanoidRootPartRotVelocity
 							Util:GetCharacter().HumanoidRootPart.CFrame = HumanoidRootPartCFrame
+							print("set")
 							CurrentCamera.CFrame = CameraCFrame
 							Camera:SetZoom(Zoom)
 							if ShiftLockEnabled ~= Input:GetShiftLockEnabled() then
