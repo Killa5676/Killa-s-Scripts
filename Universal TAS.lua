@@ -1070,11 +1070,11 @@ do
 					local currentCameraCFrame = Util:TableToCFrame(frame[7]) 
 					local zoom = frame[8]
 					local animatePose = frame[9]
-					--local shiftLockEnabled = (frame[10] == 1 and true) or false
-					--local mouseLocation = Util:TableToVector2(frame[11])
+					local shiftLockEnabled = (frame[10] == 1 and true) or false
+					local mouseLocation = Util:TableToVector2(frame[11])
 					local CurrentState = Util:GetHumanoid():GetState().Value
-					--Camera:SetCFrame(currentCameraCFrame)
-					--Camera:SetZoom(zoom)
+					Camera:SetCFrame(currentCameraCFrame)
+					Camera:SetZoom(zoom)
 					Util:GetHumanoid():ChangeState(humanoidState)
 					Animate.Pose = animatePose
 					for _, args in animations do
@@ -1091,20 +1091,18 @@ do
 					pcall(function()
 						Animate:SetAnimationSpeed(animationSpeed)
 					end)
-					--[[
+
 					if shiftLockEnabled then
 						Input:SetShiftLockEnabled(true)
 					else
 						Input:SetShiftLockEnabled(false)
 					end	
-					--]]
-					--[[
+
 					if not shiftLockEnabled and zoom > 0.52 then
 						mousemoveabs(mouseLocation.X, mouseLocation.Y)
 					else
 						mousemoveabs((Input.Resolution.X / 2) + Input.CursorOffset.X - GuiInset.X, (Input.Resolution.Y / 2) + Input.CursorOffset.Y - GuiInset.Y - 36)
 					end
-					--]]
 					Util:GetCharacter().HumanoidRootPart.CFrame = rootPartCFrame
 					self.ReplayTableIndex += 1
 				end
@@ -1451,4 +1449,3 @@ do
 end
 
 return Replay
-
