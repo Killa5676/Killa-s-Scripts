@@ -747,11 +747,20 @@ do
 
 		MainWindow:Section("TAS")
 
-		MainWindow:Toggle("Camera Locked On Freeze", {
+		MainWindow:Bind("Camera Lock", {
 			flag = "CameraLockedOnFreeze",
-			default = true,
-		},function(value)
-			UniversalTAS.CameraLocked = value
+			kbonly = true,
+			default = Enum.KeyCode.C
+		}, function()
+			local state = not UniversalTAS.CameraLocked
+
+			UniversalTAS.CameraLocked = state
+
+			StarterGui:SetCore("SendNotification", {
+				Title = "Script",
+				Text = `Camera {state and "Locked" or "Unlocked"}`,
+				Duration = 3,
+			})
 		end)
 
 		MainWindow:Section("Misc")
@@ -779,3 +788,4 @@ do
 	Misc:Init()
 	UserInterface:Init()
 end
+
