@@ -77,6 +77,7 @@ local Replay = {
 	ReplayTable = {},
 	ReplayTableIndex = 0,
 	Frozen = false,
+    CameraLocked = true,
 	FreezeFrame = 1,
 	SeekDirection = 0,
 	SeekDirectionMultiplier = 1,
@@ -1245,8 +1246,9 @@ do
 							Util:GetCharacter().HumanoidRootPart.Velocity = HumanoidRootPartVelocity
 							Util:GetCharacter().HumanoidRootPart.RotVelocity = HumanoidRootPartRotVelocity
 							Util:GetCharacter().HumanoidRootPart.CFrame = HumanoidRootPartCFrame
-							print("set")
+							if Replay.CameraLocked then 
 							CurrentCamera.CFrame = CameraCFrame
+                            end
 							Camera:SetZoom(Zoom)
 							if ShiftLockEnabled ~= Input:GetShiftLockEnabled() then
 								Input:SetShiftLockEnabled(ShiftLockEnabled)
