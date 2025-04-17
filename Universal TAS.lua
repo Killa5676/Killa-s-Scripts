@@ -1246,7 +1246,7 @@ do
 							Util:GetCharacter().HumanoidRootPart.RotVelocity = HumanoidRootPartRotVelocity
 							Util:GetCharacter().HumanoidRootPart.CFrame = HumanoidRootPartCFrame
 							print("set")
-							CurrentCamera.CFrame = CameraCFrame
+							--CurrentCamera.CFrame = CameraCFrame
 							Camera:SetZoom(Zoom)
 							if ShiftLockEnabled ~= Input:GetShiftLockEnabled() then
 								Input:SetShiftLockEnabled(ShiftLockEnabled)
