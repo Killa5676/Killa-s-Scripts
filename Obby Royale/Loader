@@ -8,11 +8,16 @@ local TeleportService = game:GetService("TeleportService")
 local HttpService = game:GetService("HttpService")
 local StarterGui = game:GetService("StarterGui")
 
-local ORUtils = require(ReplicatedStorage.Utils.ORUtils)
-
 local UniversalTAS = loadstring(game:HttpGet("https://raw.githubusercontent.com/Killa5676/Killa-s-Scripts/refs/heads/main/Universal%20TAS.lua"))()
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer.PlayerGui
+local LoadedUI = PlayerGui.LoadedStage
+local MainUI = PlayerGui.MainUI
+local PracticeUI = MainUI.PracticeUI
+
+local ORUtils = require(ReplicatedStorage.Utils.ORUtils)
+local Difficulties = require(ReplicatedStorage.Info.Difficulties)
+local PracticeController = require(MainUI.MainUIController.PracticeController)
 
 local RoundUpdate = ReplicatedStorage.RoundEvents.RoundUpdate
 local RoundEnded = ReplicatedStorage.RoundEvents.RoundEnded
@@ -40,6 +45,7 @@ local UserInterface = {
 	Join = "",
 	AutoPlay = false,
 	DisableReset = false,
+	UnlockedAll = false,
 }
 
 
@@ -534,6 +540,30 @@ do
 end
 
 do 
+	function Misc:UnlockStages()
+		if self.UnlockedAll then 
+			return 
+		end
+	
+		for difficulty in Difficulties do
+			PracticeUI.DifficultyPick.Difficulties[difficulty].Buy.Visible = false
+		end
+
+		PracticeUI.DifficultyPick.Difficulties.UnlockAll.Visible = false
+	
+		local tbl = {}
+
+		for difficulty in Difficulties do
+			table.insert(tbl, difficulty)
+		end
+	
+		self.OldUnlocked = getupvalue(PracticeController.Init, 2)
+
+		setupvalue(PracticeController.Init, 2, tbl)
+	
+		self.UnlockedAll = true
+	end
+
 	function Misc:JoinProServer()
 		TeleportService:Teleport(17205456753, LocalPlayer)
 	end
@@ -670,7 +700,14 @@ do
 
 	function Misc:Init()
 		local old; old = hookmetamethod(game, "__namecall", newcclosure(function(self, ...)
-			if tostring(self) == "Reset" and UserInterface.DisableReset then 
+			local args = {...}
+			local method = getnamecallmethod()
+
+			if method == "FireServer" and tostring(self) == "Load" then
+				if Misc.UnlockedAll and not table.find(Misc.OldUnlocked, args[1]) then 
+					TASCreator.Stages[args[2]]:Clone().Parent = LoadedUI
+				end 
+			elseif method == "FireServer" and tostring(self) == "Reset" and UserInterface.DisableReset then 
 				return
 			end
 
@@ -764,6 +801,10 @@ do
 		end)
 
 		MainWindow:Section("Misc")
+
+		MainWindow:Button("Unlock Practice Stages", function()
+			Misc:UnlockStages()
+		end)
 
 		MainWindow:Button("Join Pro Server", function()
 			Misc:JoinProServer()
