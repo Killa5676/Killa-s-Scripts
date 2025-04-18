@@ -572,16 +572,16 @@ do
 		local function HttpGet(url)
 			return pcall(HttpService.JSONDecode, HttpService, game:HttpGet(url))
 		end
-
+	
 		local function GetServers(id, cursor)
 			local fullurl = `https://games.roblox.com/v1/games/{id}/servers/Public?limit=100`
 			if cursor then
-				fullurl = `&cursor={cursor}`
+				fullurl = `{fullurl}&cursor={cursor}`
 			end
-
+	
 			return HttpGet(fullurl)
 		end
-
+	
 		local function FetchThumbs(tokens)
 			local payload = {
 				Url = "https://thumbnails.roblox.com/v1/batch",
@@ -589,10 +589,9 @@ do
 					["Content-Type"] = "application/json"
 				},
 				Method = "POST",
-
 				Body = {}
 			}
-
+	
 			for _, token in ipairs(tokens) do
 				table.insert(payload.Body, {
 					requestId = `0:{token}:AvatarHeadshot:150x150:png:regular`,
@@ -603,9 +602,9 @@ do
 					size = "150x150"
 				})
 			end
-
+	
 			payload.Body = HttpService:JSONEncode(payload.Body)
-
+	
 			local result = request(payload)
 			local success, data = pcall(HttpService.JSONDecode, HttpService, result.Body)
 			return success, data and data.data or data
@@ -622,61 +621,77 @@ do
 		
 		local success, response = HttpGet(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={UserId}&format=Png&size=150x150&isCircular=false`)
 		local thumbnail = success and response['data'][1].imageUrl
-		local placeId = UserInterface.Join or game.PlaceId
-		local cursor = nil
-		local searched = 0
-		local players = 0
+		local placeIds = {17205456753, 9472973478}
 		local searching = true
 		local threads = 30
-
-		while searching do	
-			local success, result = GetServers(placeId, cursor)
-			if not success then 
-				return UserInterface:SendNotification("Failed to get servers!", 3)
-			end
-
-			local servers = result.data
-			cursor = result.nextPageCursor
-
-			for i, server in servers do
-				local function FetchServer()
-					local success, thumbs = FetchThumbs(server.playerTokens)
-					if not success then
-						return
-					end
-
-					players += #thumbs
-
-					for _, thumb in thumbs do
-						if thumb.imageUrl and thumb.imageUrl == thumbnail then
-							searching = false
-							UserInterface:SendNotification("Found player, teleporting!", 3)
-
-							TeleportService:TeleportToPlaceInstance(placeId, server.id, LocalPlayer)
-							local connection; connection = LocalPlayer.OnTeleport:Connect(function(teleportState)
-								if teleportState == Enum.TeleportState.Failed then
-									connection:Disconnect()
-									UserInterface:SendNotification("Server is full!", 3)
-								end
-							end)
+	
+		UserInterface:SendNotification(`Searching for {Username}`, 3)
+	
+		for _, placeId in ipairs(placeIds) do
+			local cursor = nil
+			local searched = 0
+			local players = 0
+	
+			while searching do    
+				local success, result = GetServers(placeId, cursor)
+				if not success then 
+					UserInterface:SendNotification(`Failed to get servers for place {placeId}!`, 3)
+					break
+				end
+	
+				local servers = result.data
+				cursor = result.nextPageCursor
+	
+				for i, server in ipairs(servers) do
+					local function FetchServer()
+						local success, thumbs = FetchThumbs(server.playerTokens)
+						if not success then
+							return
+						end
+	
+						players += #thumbs
+	
+						for _, thumb in ipairs(thumbs) do
+							if thumb.imageUrl and thumb.imageUrl == thumbnail then
+								searching = false
+								UserInterface:SendNotification("Found player, teleporting!", 3)
+	
+								TeleportService:TeleportToPlaceInstance(placeId, server.id, LocalPlayer)
+								local connection; connection = LocalPlayer.OnTeleport:Connect(function(teleportState)
+									if teleportState == Enum.TeleportState.Failed then
+										connection:Disconnect()
+										UserInterface:SendNotification("Server is full!", 3)
+									end
+								end)
+								return
+							end
 						end
 					end
+					
+					searched = searched + 1
+					if i % threads ~= 0 then
+						task.spawn(FetchServer)
+						task.wait()
+					else
+						FetchServer()
+					end
 				end
-				searched = searched + 1
-				if i % threads ~= 0 then
-					task.spawn(FetchServer)
-					task.wait()
-				else
-					FetchServer()
+	
+				if not cursor then
+					UserInterface:SendNotification(`Finished searching place {placeId}, player not found.`, 3)
+					break
 				end
+	
+				task.wait()
 			end
-
-			if not cursor then
-				UserInterface:SendNotification("Failed to find player!", 3)
+			
+			if not searching then
 				break
 			end
-
-			task.wait()
+		end
+		
+		if searching then
+			UserInterface:SendNotification("Failed to find player in any of the searched places!", 3)
 		end
 	end
 
@@ -793,11 +808,7 @@ do
 
 			UniversalTAS.CameraLocked = state
 
-			StarterGui:SetCore("SendNotification", {
-				Title = "Script",
-				Text = `Camera {state and "Locked" or "Unlocked"}`,
-				Duration = 3,
-			})
+			UserInterface:SendNotification(`Camera {state and "Locked" or "Unlocked"}`, 3)
 		end)
 
 		MainWindow:Section("Misc")
@@ -814,6 +825,16 @@ do
 			Misc:ServerHop()
 		end)
 		
+		MainWindow:Box("Username", {
+			flag = "Username",
+		}, function(value)
+			UserInterface.Join = value
+		end)
+
+		MainWindow:Button("Join Player", function()
+			Misc:JoinPlayer()
+		end)
+
 		MainWindow:Toggle("Disable Reset", {
 			flag = "DisableReset"
 		},function(value)
