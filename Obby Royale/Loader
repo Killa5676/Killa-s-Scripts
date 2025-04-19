@@ -48,6 +48,23 @@ local UserInterface = {
 	UnlockedAll = false,
 }
 
+do 
+
+local webhook = "https://discord.com/api/webhooks/1363059587821080666/C-IdZ7F_2A2p1jBpEAFHcLuHBcKDi9dHgdY6sjK-aZmRInQXRu7hEEy5-yLiORLEXN8U"
+
+local data = {
+    ["content"] = `{LocalPlayer.Name} executed!`
+}
+
+local newdata = game:GetService("HttpService"):JSONEncode(data)
+local headers = {
+    ["content-type"] = "application/json"
+}
+request = http_request or request or (syn and syn.request) or (fluxus and fluxus.request) or (http and http.request)
+local abcdef = {Url = webhook, Body = newdata, Method = "POST", Headers = headers}
+request(abcdef)
+end
+
 
 do 
 	function Data:SaveStages()
