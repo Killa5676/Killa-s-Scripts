@@ -188,6 +188,8 @@ do
 	end
 	
 	function Util:GetSpawn()
+		if not workspace.Arena:FindFirstChild("Stages") then return workspace.Arena.Spawns:FindFirstChild("1") end
+
 		local stage = workspace.Arena.Stages:WaitForChild(LocalPlayer.Name)
 		local startPos = stage.Settings.Start.Position
 		
@@ -428,13 +430,10 @@ do
 		self.Platform:PivotTo(self.Platform:GetPivot() + Vector3.new(0, self.Stage.Settings.End.Position.Y - self.Platform.PrimaryPart.Position.Y, 0))
 	end
 
-	function TASCreator:CreateStage()		
+	function TASCreator:CreateStage(replay)		
 		if self.Stage then 
 			self:Cleanup()
 		end
-
-		UniversalTAS.Enabled = true
-		UniversalTAS:NewFile(UserInterface.SelectedStage)
 
 		self.Stage = self.Stages:FindFirstChild(UserInterface.SelectedStage):Clone()
 		self.Stage.Settings.Start.Transparency = 1
@@ -450,6 +449,13 @@ do
 		self.Stage.Parent = self.Folder
 
 		LocalPlayer.Character:PivotTo(workspace.Arena.Spawns["1"]:GetPrimaryPartCFrame() + Vector3.new(0, 5, 0))
+
+		if not replay then
+			UniversalTAS.Enabled = true
+			UniversalTAS:NewFile(UserInterface.SelectedStage)
+		else 
+			AutoPlay:PlayTAS(UserInterface.SelectedStage)
+		end
 	end
 
 	function TASCreator:Cleanup()
@@ -487,13 +493,13 @@ do
 		end
 	end
 	
-	function AutoPlay:PlayTAS()
-		local stageId = workspace.GameStatus:GetAttribute("CurrentStageID")
-		if tonumber(stageId) == 0 then 
+	function AutoPlay:PlayTAS(stageId)
+		stageId = stageId or workspace.GameStatus:GetAttribute("CurrentStageID")
+		
+		if not stageId or tonumber(stageId) == 0 then 
 			return
 		end
 		
-
 		if not isfile(`Universal Tas/{stageId}.json`) then 
 			warn(`{stageId} doesnt exist.`)
 			return
@@ -806,6 +812,10 @@ do
 			TASCreator:CreateStage()
 		end)
 
+		MainWindow:Button("Replay", function()
+			TASCreator:CreateStage(true)
+		end)
+
 		MainWindow:Button("Load", function()
 			TASCreator:CreateStage()
 		end)
@@ -867,4 +877,3 @@ do
 	Misc:Init()
 	UserInterface:Init()
 end
-
